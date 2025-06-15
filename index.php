@@ -59,6 +59,6 @@ $items = [
         <?php include 'views/items.php'; ?>
     </main>
 
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/itemScript.js"></script>
 </body>
 </html>
