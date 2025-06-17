@@ -1,3 +1,11 @@
+<?php
+require_once './config/database.php'; // Pastikan path ke config.php benar
+
+// Query untuk mengambil data items
+$stmt = $pdo->query("SELECT id, name, description, category, price_per_day, status, photo FROM items");
+$items = $stmt->fetchAll();
+?>
+
 <div class="header-bar">
     <h1>Daftar Barang</h1>
     <div class="search-container">
@@ -20,12 +28,14 @@
              data-status="<?= htmlspecialchars(strtolower($item['status'])) ?>">
             <div class="status <?= $item['status'] ?>"><?= ucfirst($item['status']) ?></div>
             <h3><?= htmlspecialchars($item['name']) ?></h3>
-            <div class="category"><?= htmlspecialchars($item['category']) ?></div>
+            
+            
             <div class="image-container">
-                <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                <img src="<?= htmlspecialchars($item['photo']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
             </div>
+            <div class="category"><?= htmlspecialchars($item['category']) ?></div>
             <div class="description"><?= htmlspecialchars($item['description']) ?></div>
-            <div class="price">Rp <?= number_format($item['price'], 0, ',', '.') ?> /hari</div>
+            <div class="price">Rp <?= number_format($item['price_per_day'], 0, ',', '.') ?> /hari</div>
             <div class="actions">
                 <button class="edit">Edit</button>
                 <button class="delete">Hapus</button>
