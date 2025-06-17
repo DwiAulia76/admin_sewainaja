@@ -1,3 +1,30 @@
+/* ===== GLOBAL STYLES ===== */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+:root {
+  --primary: #1e293b;
+  --secondary: #60a5fa;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --light: #f3f4f6;
+  --dark: #111827;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--light);
+  /* color: #333;
+  display: flex;
+  min-height: 100vh; */
+  padding: 10 30px;
+}
+
 /* ===== SIDEBAR STYLES ===== */
 .sidebar {
   width: 240px;
@@ -85,7 +112,7 @@
   background: #dc2626;
 }
 
-/* Responsive sidebar */
+/* ===== SIDEBAR RESPONSIVE ===== */
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);

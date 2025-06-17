@@ -1,28 +1,39 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Manajemen Barang</title>
-    <link rel="stylesheet" href="public/assets/css/itemsStyle.css">
+    <title>Admin Panel - Dashboard</title>
     <link rel="stylesheet" href="public/assets/css/sidebarStyle.css">
+    <link rel="stylesheet" href="public/assets/css/dashboardStyle.css">
+
+    <!-- Tambahkan CSS khusus dashboard jika ada -->
 </head>
+<script>
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+</script>
 <body>
-    <!-- Mobile Toggle Button (Hidden on Desktop) -->
     <button class="mobile-toggle" id="sidebarToggle">
         ☰
     </button>
 
-    <!-- Include Sidebar -->
-    <?php include 'views/layouts/sidebar.php'; ?>
+    <?php 
+    $active_page = 'dashboard'; // Set halaman aktif
+    include 'views/layouts/sidebar.php'; 
+    ?>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Include Items Content -->
-        <?php include 'views/items/items.php'; ?>
+        <h1>Selamat Datang di Dashboard</h1>
+        <!-- Konten dashboard akan ditambahkan di sini -->
+        <?php include 'views/dashboard/dashboard.php'; ?>
     </main>
 
-    <script src="public/assets/js/itemScript.js"></script>
+    <!-- Tambahkan JS khusus dashboard jika ada -->
+    <script src="public/assets/js/sidebarScript.js"></script>
 </body>
 </html>
