@@ -30,7 +30,7 @@ body {
   display: flex;
   flex-grow: 1;
   max-width: 400px;
-  margin: 0 20px;
+  margin: 0 5px 0 0;
   position: relative;
 }
 
@@ -274,13 +274,14 @@ body {
 
   .search-container {
     max-width: 300px;
+    margin: 0 90px 0 1px;
   }
 }
 
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;
-    padding: 20px;
+    padding: 60px;
   }
 }
 
@@ -306,7 +307,6 @@ body {
 
   .search-container {
     max-width: none;
-    margin: 10px 0;
   }
 
   .add-item {

@@ -1,3 +1,4 @@
+<?php include './auth/auth.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -24,7 +25,7 @@
 
     <?php 
     $active_page = 'dashboard'; // Set halaman aktif
-    include 'views/layouts/sidebar.php'; 
+    include 'views/components/sidebar.php'; 
     ?>
 
     <main class="main-content">

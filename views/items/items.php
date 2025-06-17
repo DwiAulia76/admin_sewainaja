@@ -2,6 +2,7 @@
 require_once './config/database.php'; // Pastikan path ke config.php benar
 
 // Query untuk mengambil data items
+$stmt = $pdo->query("SELECT * FROM items");
 $stmt = $pdo->query("SELECT id, name, description, category, price_per_day, status, photo FROM items");
 $items = $stmt->fetchAll();
 ?>
@@ -16,7 +17,7 @@ $items = $stmt->fetchAll();
             </svg>
         </button>
     </div>
-    <button class="add-item">
+    <button class="add-item" id="openModal">
         <span>+</span> Tambah Barang
     </button>
 </div>

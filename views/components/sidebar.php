@@ -10,7 +10,7 @@
         <li><a href="#" <?= ($active_page == 'notification') ? 'class="active"' : '' ?>>Notifikasi <span class="badge">New</span></a></li>
         <li><a href="#" <?= ($active_page == 'message') ? 'class="active"' : '' ?>>Pesan</a></li>
     </ul>
-    <form method="post" class="logout-form">
+    <form method="post" action="/admin_sewainaja/auth/logout.php" class="logout-form">
         <button type="submit">Logout</button>
     </form>
 </aside>

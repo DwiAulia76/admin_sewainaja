@@ -15,6 +15,10 @@ $options = [
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-    throw new \PDOException($e->getMessage(), (int)$e->getCode());
+    // Simpan error ke log
+    error_log("Database error: " . $e->getMessage());
+    // Tampilkan pesan ramah pengguna
+    die("Koneksi database gagal. Silakan coba lagi nanti.");
+
 }
 ?>

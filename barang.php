@@ -1,3 +1,10 @@
+<?php include './auth/auth.php'; ?>
+<?php
+require_once './config/database.php';
+$stmt = $pdo->query("SELECT * FROM items");
+$items = $stmt->fetchAll();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,6 +13,7 @@
     <title>Admin Panel - Manajemen Barang</title>
     <link rel="stylesheet" href="public/assets/css/itemsStyle.css">
     <link rel="stylesheet" href="public/assets/css/sidebarStyle.css">
+    <link rel="stylesheet" href="public/assets/css/modalStyle.css">
 </head>
 <body>
     <button class="mobile-toggle" id="sidebarToggle">
@@ -14,14 +22,18 @@
 
     <?php 
     $active_page = 'items'; // Set halaman aktif
-    include 'views/layouts/sidebar.php'; 
+    include 'views/components/sidebar.php'; 
     ?>
 
     <main class="main-content">
         <?php include 'views/items/items.php'; ?>
+
+        <!-- Include Modal HTML -->
+        <?php include './views/components/modalAddItem.php'; ?>
     </main>
 
     <script src="public/assets/js/itemScript.js"></script>
     <script src="public/assets/js/sidebarScript.js"></script>
+    <script src="public/assets/js/modalScript.js" defer></script>
 </body>
 </html>
