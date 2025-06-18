@@ -65,3 +65,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// Tambahkan di bagian akhir file
+document.addEventListener("DOMContentLoaded", function () {
+  // Tangani form submit untuk mencegah reload halaman
+  const addForm = document.getElementById("addItemForm");
+  if (addForm) {
+    addForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      // Tambahkan AJAX atau biarkan form submit normal
+      this.submit();
+    });
+  }
+
+  const editForm = document.getElementById("editItemForm");
+  if (editForm) {
+    editForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      // Tambahkan AJAX atau biarkan form submit normal
+      this.submit();
+    });
+  }
+
+  // Tangani konfirmasi hapus
+  const deleteButtons = document.querySelectorAll(".delete");
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", function (e) {
+      if (!confirm("Apakah Anda yakin ingin menghapus barang ini?")) {
+        e.preventDefault();
+      }
+    });
+  });
+});

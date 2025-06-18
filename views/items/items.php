@@ -31,12 +31,17 @@ $items = $stmt->fetchAll();
             <h3><?= htmlspecialchars($item['name']) ?></h3>
             
             <div class="image-container">
-                <?php if ($item['photo']): ?>
-                    <img src="../<?= htmlspecialchars($item['photo']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                <?php 
+                $photoPath = $item['photo'];
+                $absolutePath = __DIR__ . '/../' . $photoPath;
+                if (!empty($photoPath) && file_exists($absolutePath)): 
+                ?>
+                    <img src="<?= htmlspecialchars($photoPath) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
                 <?php else: ?>
                     <div class="no-image">Tidak ada gambar</div>
                 <?php endif; ?>
             </div>
+
             <div class="category"><?= htmlspecialchars($item['category']) ?></div>
             <div class="description"><?= htmlspecialchars($item['description']) ?></div>
             <div class="price">Rp <?= number_format($item['price_per_day'], 0, ',', '.') ?> /hari</div>
@@ -52,7 +57,7 @@ $items = $stmt->fetchAll();
                 </button>
                 <form method="post" action="./config/delete_item.php" class="delete-form">
                     <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                    <button type="submit" class="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus barang ini?')">Hapus</button>
+                    <button type="submit" class="delete">Hapus</button>
                 </form>
             </div>
         </div>
