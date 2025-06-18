@@ -27,13 +27,14 @@ $items = $stmt->fetchAll();
 
     <main class="main-content">
         <?php include 'views/items/items.php'; ?>
-
-        <!-- Include Modal HTML -->
-        <?php include './views/components/modalAddItem.php'; ?>
     </main>
+
+    <!-- Pindahkan modal ke luar main-content -->
+    <?php include './views/components/modalAddItem.php'; ?>
+    <?php include './views/components/modalEditItem.php'; ?>
 
     <script src="public/assets/js/itemScript.js"></script>
     <script src="public/assets/js/sidebarScript.js"></script>
-    <script src="public/assets/js/modalScript.js" defer></script>
+    <script src="public/assets/js/modalScript.js"></script>
 </body>
 </html>

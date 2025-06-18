@@ -1,5 +1,8 @@
 <?php
-session_start();
+// Periksa apakah sesi belum dimulai
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Cek apakah user sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -24,4 +27,3 @@ if ($_SESSION['user_role'] !== 'admin') {
     header('Location: /admin_sewainaja/auth/login.php?error=access');
     exit;
 }
-?>

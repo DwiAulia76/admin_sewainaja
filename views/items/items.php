@@ -1,8 +1,8 @@
 <?php
-require_once './config/database.php'; // Pastikan path ke config.php benar
+include './auth/auth.php'; 
+require_once './config/database.php';
 
 // Query untuk mengambil data items
-$stmt = $pdo->query("SELECT * FROM items");
 $stmt = $pdo->query("SELECT id, name, description, category, price_per_day, status, photo FROM items");
 $items = $stmt->fetchAll();
 ?>
@@ -30,16 +30,30 @@ $items = $stmt->fetchAll();
             <div class="status <?= $item['status'] ?>"><?= ucfirst($item['status']) ?></div>
             <h3><?= htmlspecialchars($item['name']) ?></h3>
             
-            
             <div class="image-container">
-                <img src="<?= htmlspecialchars($item['photo']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                <?php if ($item['photo']): ?>
+                    <img src="../<?= htmlspecialchars($item['photo']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                <?php else: ?>
+                    <div class="no-image">Tidak ada gambar</div>
+                <?php endif; ?>
             </div>
             <div class="category"><?= htmlspecialchars($item['category']) ?></div>
             <div class="description"><?= htmlspecialchars($item['description']) ?></div>
             <div class="price">Rp <?= number_format($item['price_per_day'], 0, ',', '.') ?> /hari</div>
             <div class="actions">
-                <button class="edit">Edit</button>
-                <button class="delete">Hapus</button>
+                <button class="edit" data-id="<?= $item['id'] ?>" 
+                        data-name="<?= htmlspecialchars($item['name']) ?>"
+                        data-desc="<?= htmlspecialchars($item['description']) ?>"
+                        data-cat="<?= htmlspecialchars($item['category']) ?>"
+                        data-price="<?= $item['price_per_day'] ?>"
+                        data-status="<?= $item['status'] ?>"
+                        data-photo="<?= htmlspecialchars($item['photo']) ?>">
+                    Edit
+                </button>
+                <form method="post" action="./config/delete_item.php" class="delete-form">
+                    <input type="hidden" name="id" value="<?= $item['id'] ?>">
+                    <button type="submit" class="delete" onclick="return confirm('Apakah Anda yakin ingin menghapus barang ini?')">Hapus</button>
+                </form>
             </div>
         </div>
     <?php endforeach; ?>
