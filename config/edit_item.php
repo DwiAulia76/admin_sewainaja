@@ -21,27 +21,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle file upload
     $photoPath = $existingPhoto;
     if (!empty($_FILES['photo']['name'])) {
-        $uploadDir = __DIR__ . '/../public/uploads/';
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        $photoName = uniqid() . '_' . basename($_FILES['photo']['name']);
-        $uploadPath = $uploadDir . $photoName;
-
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], $uploadPath)) {
-            $photoPath = 'public/uploads/' . $photoName;
-            
-            // Delete old photo if exists
-            if (!empty($existingPhoto) && file_exists(__DIR__ . '/../' . $existingPhoto)) {
-                unlink(__DIR__ . '/../' . $existingPhoto);
-            }
-        } else {
-            $_SESSION['error'] = "Gagal mengupload foto baru";
-            header("Location: ../barang.php");
-            exit();
-        }
+    $uploadDir = __DIR__ . '/../public/uploads/';
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
     }
+
+    $photoName = uniqid() . '_' . basename($_FILES['photo']['name']);
+    $uploadPath = $uploadDir . $photoName;
+
+    if (move_uploaded_file($_FILES['photo']['tmp_name'], $uploadPath)) {
+        $photoPath = 'uploads/' . $photoName;
+
+        // Hapus foto lama jika ada
+        if (!empty($existingPhoto) && file_exists(__DIR__ . '/../public/' . $existingPhoto)) {
+            unlink(__DIR__ . '/../public/' . $existingPhoto);
+        }
+    } else {
+        $_SESSION['error'] = "Gagal mengupload foto baru";
+        header("Location: ../barang.php");
+        exit();
+    }
+}
 
     // Update database
     try {

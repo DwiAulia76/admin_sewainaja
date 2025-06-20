@@ -31,16 +31,19 @@ $items = $stmt->fetchAll();
             <h3><?= htmlspecialchars($item['name']) ?></h3>
             
             <div class="image-container">
-                <?php 
-                $photoPath = $item['photo'];
-                $absolutePath = __DIR__ . '/../' . $photoPath;
-                if (!empty($photoPath) && file_exists($absolutePath)): 
-                ?>
-                    <img src="<?= htmlspecialchars($photoPath) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
-                <?php else: ?>
-                    <div class="no-image">Tidak ada gambar</div>
-                <?php endif; ?>
-            </div>
+    <div class="image-container">
+        <?php
+            // Path URL dari file gambar
+            $imagePath = '/admin_sewainaja/public/' . $item['photo']; // contoh: uploads/nama.jpg
+            if (!empty($item['photo'])) {
+                echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($item['name']) . '">';
+            } else {
+                echo '<div class="no-image">Tidak ada gambar</div>';
+            }
+        ?>
+        </div>
+
+</div>
 
             <div class="category"><?= htmlspecialchars($item['category']) ?></div>
             <div class="description"><?= htmlspecialchars($item['description']) ?></div>
@@ -57,7 +60,7 @@ $items = $stmt->fetchAll();
                 </button>
                 <form method="post" action="./config/delete_item.php" class="delete-form">
                     <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                    <button type="submit" class="delete">Hapus</button>
+                    <button type="submit" class="delete" >Hapus</button>
                 </form>
             </div>
         </div>
