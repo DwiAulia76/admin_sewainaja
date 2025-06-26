@@ -21,7 +21,7 @@ body {
 
 /* Main Content Area Styling */
 .main-content {
-  margin-left: 125px; /* sesuai lebar sidebar */
+  margin-left: 180px; /* sesuai lebar sidebar */
   flex-grow: 1;
   padding: 20px;
   transition: all 0.3s; /* Animasi halus saat margin-left berubah (misalnya saat responsif) */
@@ -342,10 +342,23 @@ button {
   cursor: pointer;
 }
 
+/* Desktop Styles (min-width: 769px) */
+@media (min-width: 769px) {
+  .main-content {
+    /* **PERBAIKAN UTAMA DI SINI:** */
+    /* Menyesuaikan margin-left agar sama dengan lebar sidebar (240px) */
+    margin-left: 125px;
+  }
+
+  .mobile-toggle {
+    display: none; /* Pastikan tombol mobile toggle tersembunyi di desktop */
+  }
+}
+
 /* Tablet & Mobile Styles (max-width: 768px) */
 @media (max-width: 768px) {
   .main-content {
-    margin-left: 125px; /* Tidak ada margin kiri pada mobile saat sidebar tersembunyi */
+    margin-left: 0; /* Tidak ada margin kiri pada mobile saat sidebar tersembunyi */
     padding: 20px 15px; /* Padding disesuaikan untuk layar kecil */
   }
 
