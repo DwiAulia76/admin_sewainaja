@@ -25,9 +25,14 @@ $items = $stmt->fetchAll();
 <div class="card-grid" id="cardGrid">
     <?php foreach ($items as $item): ?>
         <div class="card" data-name="<?= htmlspecialchars(strtolower($item['name'])) ?>" 
-             data-category="<?= htmlspecialchars(strtolower($item['category'])) ?>" 
-             data-status="<?= htmlspecialchars(strtolower($item['status'])) ?>">
-            <div class="status <?= $item['status'] ?>"><?= ucfirst($item['status']) ?></div>
+            data-category="<?= htmlspecialchars(strtolower($item['category'])) ?>" 
+            data-status="<?= htmlspecialchars(strtolower($item['status'])) ?>">
+
+            <div class="meta-container">
+                <div class="status <?= $item['status'] ?>"><?= ucfirst($item['status']) ?></div>
+            <div class="category"><?= htmlspecialchars($item['category']) ?></div>
+            </div>
+            
             <h3><?= htmlspecialchars($item['name']) ?></h3>
             
             <div class="image-container">
@@ -45,7 +50,7 @@ $items = $stmt->fetchAll();
 
 </div>
 
-            <div class="category"><?= htmlspecialchars($item['category']) ?></div>
+            
             <div class="description"><?= htmlspecialchars($item['description']) ?></div>
             <div class="price">Rp <?= number_format($item['price_per_day'], 0, ',', '.') ?> /hari</div>
             <div class="actions">
