@@ -1,0 +1,401 @@
+/* Universal Box-sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body Styling */
+body {
+  background: #f0f2f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Main Layout Container (Flexbox for Sidebar and Main Content) */
+.kalender-container {
+  display: flex; /* Menggunakan Flexbox untuk menempatkan sidebar dan main-content berdampingan */
+  min-height: 100vh; /* Memastikan container setidaknya setinggi viewport */
+}
+
+/* Main Content Area Styling */
+.main-content {
+  margin-left: 180px; /* sesuai lebar sidebar */
+  flex-grow: 1;
+  padding: 20px;
+  transition: all 0.3s; /* Animasi halus saat margin-left berubah (misalnya saat responsif) */
+}
+
+/* Header Styling (Top Right Section) */
+.header {
+  display: flex;
+  justify-content: space-between; /* Menempatkan elemen di ujung-ujung */
+  align-items: center; /* Menyelaraskan vertikal di tengah */
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Membuat bentuk lingkaran */
+  background: #4361ee;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* Calendar Controls Styling */
+.controls {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Memungkinkan item untuk pecah baris jika ruang tidak cukup */
+  gap: 10px; /* Jarak antar item kontrol */
+  justify-content: space-between;
+  align-items: center;
+}
+
+select,
+button {
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 14px;
+}
+
+.btn-nav {
+  background: #4361ee;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Calendar Grid Styling */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 kolom dengan lebar yang sama */
+  gap: 1px; /* Jarak tipis antar sel hari */
+  background: #e0e0e0; /* Latar belakang untuk garis pemisah */
+  border-radius: 8px;
+  overflow: hidden; /* Memastikan sudut border-radius terlihat rapi */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-day {
+  background: #4361ee;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.day {
+  background: white;
+  padding: 10px;
+  min-height: 120px; /* Tinggi minimum untuk setiap hari */
+  position: relative;
+  transition: all 0.2s;
+}
+
+.day:hover {
+  background: #f8f9ff;
+  z-index: 1; /* Memastikan hover state tidak terpotong oleh sibling */
+}
+
+.day-number {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.event-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #4361ee;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.events-container {
+  max-height: 85px; /* Batas tinggi untuk daftar event di dalam hari */
+  overflow-y: auto; /* Memunculkan scrollbar jika event terlalu banyak */
+}
+
+.event-item {
+  font-size: 0.8rem;
+  padding: 4px 6px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  background: #f0f4ff;
+  white-space: nowrap; /* Mencegah teks event pecah baris */
+  overflow: hidden; /* Menyembunyikan teks yang melampaui batas */
+  text-overflow: ellipsis; /* Menambahkan "..." jika teks terlalu panjang */
+  cursor: pointer;
+}
+
+.event-pending {
+  background: #fff8e1;
+  border-left: 3px solid #ffd166;
+}
+
+.event-approved {
+  background: #e8f5e9;
+  border-left: 3px solid #06d6a0;
+}
+
+.event-rejected {
+  background: #ffebee;
+  border-left: 3px solid #ef476f;
+}
+
+.today .day-number {
+  background: #4361ee;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekend {
+  background: #f9f9ff;
+}
+
+/* Modal Styling */
+.modal {
+  display: none; /* Sembunyikan secara default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Overlay gelap */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.active {
+  display: flex; /* Tampilkan modal saat aktif */
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.rental-entry {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  background: #f9f9f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.rental-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.rental-title {
+  font-weight: 600;
+  color: #4361ee;
+  margin: 0;
+}
+
+.rental-status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.status-pending {
+  background: #fff8e1;
+  color: #b38b00;
+}
+
+.status-approved {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.rental-details {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Button Styling */
+.btn {
+  padding: 8px 15px;
+  margin-top: 8px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-approve {
+  background: var(--success); /* Menggunakan variabel CSS dari :root */
+  color: white;
+}
+
+.btn-reject {
+  background: #ef476f;
+  color: white;
+}
+
+.btn-close {
+  background: #e0e0e0;
+  color: #333;
+  margin-top: 15px;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+
+/* Mobile Toggle Button (untuk tombol menu mobile) */
+.mobile-toggle {
+  display: none; /* Sembunyikan secara default pada desktop */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  background: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Desktop Styles (min-width: 769px) */
+@media (min-width: 769px) {
+  .main-content {
+    /* **PERBAIKAN UTAMA DI SINI:** */
+    /* Menyesuaikan margin-left agar sama dengan lebar sidebar (240px) */
+    margin-left: 125px;
+  }
+
+  .mobile-toggle {
+    display: none; /* Pastikan tombol mobile toggle tersembunyi di desktop */
+  }
+}
+
+/* Tablet & Mobile Styles (max-width: 768px) */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0; /* Tidak ada margin kiri pada mobile saat sidebar tersembunyi */
+    padding: 20px 15px; /* Padding disesuaikan untuk layar kecil */
+  }
+
+  .mobile-toggle {
+    display: block; /* Tampilkan tombol toggle mobile */
+  }
+
+  .calendar {
+    grid-template-columns: repeat(
+      1,
+      1fr
+    ); /* 1 kolom per baris untuk kalender */
+  }
+
+  .header-day {
+    display: none; /* Sembunyikan nama hari (Minggu, Senin, dll.) pada tampilan kalender 1 kolom */
+  }
+
+  .controls {
+    flex-direction: column; /* Kontrol ditumpuk vertikal */
+    align-items: stretch; /* Memanjang untuk mengisi lebar */
+  }
+
+  .calendar-nav {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+}
+
+/* Small Mobile Styles (max-width: 480px) */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column; /* Header ditumpuk vertikal */
+    align-items: flex-start; /* Elemen header dimulai dari kiri */
+  }
+
+  .user-info {
+    margin-top: 10px; /* Jarak dari elemen di atasnya */
+  }
+}

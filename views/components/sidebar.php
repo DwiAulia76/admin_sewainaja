@@ -5,8 +5,11 @@
     <ul>
         <li><a href="index.php" <?= ($active_page == 'dashboard') ? 'class="active"' : '' ?>>Dashboard</a></li>
         <li><a href="barang.php" <?= ($active_page == 'items') ? 'class="active"' : '' ?>>Manajemen Barang</a></li>
-        <li><a href="penyewaan.php" <?= ($active_page == 'rental') ? 'class="active"' : '' ?>>Penyewaan</a></li>
+        <li><a href="kalender_penyewaan.php" <?= ($active_page == 'kalender_penyewaan') ? 'class="active"' : '' ?>>Kalender Penyewaan</a></li>
+        <li><a href="#" <?= ($active_page == 'manajemen_pengguna') ? 'class="active"' : '' ?>>Manajemen Pengguna</a></li>
         <li><a href="#" <?= ($active_page == 'payment') ? 'class="active"' : '' ?>>Pembayaran</a></li>
+        <li><a href="#" <?= ($active_page == 'riwayat_penyewaan') ? 'class="active"' : '' ?>>Riwayat Penyewaan</a></li>
+        <li><a href="#" <?= ($active_page == 'laporan') ? 'class="active"' : '' ?>>Laporan</a></li>
         <li><a href="#" <?= ($active_page == 'notification') ? 'class="active"' : '' ?>>Notifikasi <span class="badge">New</span></a></li>
         <li><a href="#" <?= ($active_page == 'message') ? 'class="active"' : '' ?>>Pesan</a></li>
     </ul>

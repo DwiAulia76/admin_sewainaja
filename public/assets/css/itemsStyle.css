@@ -1,23 +1,23 @@
 /* ===== GLOBAL STYLES ===== */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 :root {
   --primary: #1e293b;
-  --secondary: #60a5fa;
-  --success: #22c55e;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --light: #f3f4f6;
-  --dark: #111827;
+  --secondary: #4361ee;
+  --success: #06d6a0;
+  --danger: #ef476f;
+  --warning: #ffd166;
+  --light: #f8f9fa;
+  --dark: #1e293b;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--light);
   /* color: #333;
   display: flex;
@@ -110,6 +110,25 @@ body {
   background: #1d4ed8;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* CSS */
+.meta-container {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Kolom 1: sesuai konten, Kolom 2: sisa space */
+  gap: 10px;
+  align-items: center;
+}
+
+/* Opsional: Atur gaya khusus */
+.status {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.category {
+  font-weight: bold;
 }
 
 .card-grid {

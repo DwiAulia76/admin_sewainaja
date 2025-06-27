@@ -1,37 +1,21 @@
-/* ===== GLOBAL STYLES ===== */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+/* ===== GLOBAL STYLES (for variables) ===== */
 :root {
   --primary: #1e293b;
-  --secondary: #60a5fa;
-  --success: #22c55e;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --light: #f3f4f6;
-  --dark: #111827;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Poppins", sans-serif;
-  background-color: var(--light);
-  /* color: #333;
-  display: flex;
-  min-height: 100vh; */
-  padding: 10 30px;
+  --secondary: #4361ee;
+  --success: #06d6a0;
+  --danger: #ef476f;
+  --warning: #ffd166;
+  --light: #f8f9fa;
+  --dark: #1e293b;
 }
 
 /* ===== SIDEBAR STYLES ===== */
 .sidebar {
-  width: 240px;
+  width: 240px; /* Lebar sidebar yang ditetapkan */
   background-color: var(--primary);
   color: white;
-  padding: 20px 0;
-  position: fixed;
+  padding: 20px 0; /* Padding atas dan bawah 20px, kiri kanan 0px */
+  position: fixed; /* Membuat sidebar tetap di tempatnya saat scroll */
   top: 0;
   left: 0;
   bottom: 0;
@@ -43,11 +27,17 @@ body {
   padding: 0 20px 20px;
   border-bottom: 1px solid #334155;
   margin-bottom: 20px;
+  height: 60px; /* Tinggi tetap */
+  display: flex;
+  align-items: center; /* Pusatkan vertikal */
 }
 
 .sidebar h2 {
   color: var(--secondary);
   font-size: 1.4rem;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .sidebar ul {
@@ -78,6 +68,26 @@ body {
   background-color: #334155;
   color: white;
   font-weight: bold;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.sidebar-menu li a {
+  display: block;
+  padding: 12px 20px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.sidebar-menu li a:hover,
+.sidebar-menu li a.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .badge {
@@ -115,25 +125,20 @@ body {
 /* ===== SIDEBAR RESPONSIVE ===== */
 @media (max-width: 768px) {
   .sidebar {
-    transform: translateX(-100%);
-    width: 280px;
+    transform: translateX(
+      -100%
+    ); /* Sembunyikan sidebar di luar layar secara default */
+    width: 280px; /* Lebar sidebar saat muncul di mobile (jika berbeda dari desktop) */
+    position: fixed;
+    left: -250px; /* Jarak untuk 'transform: translateX' agar pas */
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s; /* Animasi geser */
   }
 
   .sidebar.active {
-    transform: translateX(0);
-  }
-
-  .mobile-toggle {
-    display: block;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 101;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 10px;
-    cursor: pointer;
+    transform: translateX(0); /* Tampilkan sidebar */
+    left: 0;
   }
 }
