@@ -1,6 +1,6 @@
 <?php
 // === FILE: calendar-data.php ===
-require_once 'database.php';
+require_once '/config/database.php';
 
 $stmt = $pdo->query("SELECT r.id, i.name AS item_name, u.name AS user_name, r.start_date, r.end_date, r.status, r.confirmed_by_admin
                      FROM rentals r

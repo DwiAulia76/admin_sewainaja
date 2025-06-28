@@ -1,50 +1,48 @@
+<?php
+$stmt = $pdo->prepare("
+    SELECT r.*, i.name AS item_name, u.name AS penyewa_name
+    FROM rentals r
+    JOIN items i ON r.item_id = i.id
+    JOIN users u ON r.penyewa_id = u.id
+");
+$stmt->execute();
+$rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 
-    <div class="kalender-container">
-        <div class="main-content">
-            <div class="header">
-                <h1>Kalender Penyewaan</h1>
-                <div class="user-info">
-                    <div class="user-avatar"><?= substr($_SESSION['user_email'], 0, 1) ?></div>
-                    <div>
-                        <div><?= htmlspecialchars($_SESSION['user_email']) ?></div>
-                        <div style="font-size: 0.8rem; color: #666;">Administrator</div>
-                    </div>
-                </div>
+<div class="kalender-container">
+    <div class="header">
+        <h1>Kalender Penyewaan</h1>
+        <div class="controls">
+            <div class="calendar-nav">
+                <button id="prevMonth" class="btn-nav">←</button>
+                <select id="monthSelect"></select>
+                <select id="yearSelect"></select>
+                <button id="nextMonth" class="btn-nav">→</button>
+                <button id="todayBtn" class="today-btn">Hari Ini</button>
             </div>
             
-            <div class="controls">
-                <div class="calendar-nav">
-                    <button class="btn btn-nav" id="prevMonth">←</button>
-                    <select id="monthSelect"></select>
-                    <select id="yearSelect"></select>
-                    <button class="btn btn-nav" id="nextMonth">→</button>
-                    <button class="btn" id="todayBtn" style="margin-left: 10px;">Hari Ini</button>
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-color approved"></span>
+                    Disetujui
                 </div>
-                <div>
-                    <span style="display: inline-block; margin-right: 10px;">
-                        <span style="background:#e8f5e9; padding:2px 8px; border-radius:4px;">Disetujui</span>
-                    </span>
-                    <span style="display: inline-block; margin-right: 10px;">
-                        <span style="background:#fff8e1; padding:2px 8px; border-radius:4px;">Menunggu</span>
-                    </span>
-                    <span>
-                        <span style="background:#ffebee; padding:2px 8px; border-radius:4px;">Ditolak</span>
-                    </span>
+                <div class="legend-item">
+                    <span class="legend-color pending"></span>
+                    Menunggu
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color rejected"></span>
+                    Ditolak
                 </div>
             </div>
-            
-            <div id="calendar" class="calendar"></div>
         </div>
-    </div>
 
-    <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detail Penyewaan</h3>
-                <button class="close-modal" onclick="closeModal()">×</button>
-            </div>
-            <h4>Penyewaan pada <span id="modalDate" style="color: #4361ee;"></span></h4>
-            <div id="rentalList"></div>
-            <button class="btn btn-close" onclick="closeModal()">Tutup</button>
+        <script>
+            const rentalData = <?= json_encode($rentals) ?>;
+        </script>
+        
+        <div id="calendar" class="calendar">
+            <!-- Calendar cells will be generated here -->
         </div>
     </div>
+</div>

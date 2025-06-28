@@ -2,25 +2,27 @@
 :root {
   --primary: #1e293b;
   --secondary: #4361ee;
-  --success: #06d6a0;
-  --danger: #ef476f;
-  --warning: #ffd166;
+  --success: #06d63d;
+  --danger: #f12f2f;
+  --warning: #fca52a;
   --light: #f8f9fa;
   --dark: #1e293b;
 }
 
 /* ===== SIDEBAR STYLES ===== */
 .sidebar {
-  width: 240px; /* Lebar sidebar yang ditetapkan */
+  width: 240px;
   background-color: var(--primary);
   color: white;
-  padding: 20px 0; /* Padding atas dan bawah 20px, kiri kanan 0px */
-  position: fixed; /* Membuat sidebar tetap di tempatnya saat scroll */
+  padding: 20px 0 100px; /* Tambah padding bawah */
+  position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   z-index: 100;
-  transition: transform 0.3s ease;
+  overflow-y: auto; /* Scroll vertical */
+  display: flex;
+  flex-direction: column; /* Agar bisa pakai margin-top: auto */
 }
 
 .sidebar-header {

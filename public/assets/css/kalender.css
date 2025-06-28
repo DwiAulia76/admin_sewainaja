@@ -1,4 +1,4 @@
-/* Universal Box-sizing */
+/* ===== GLOBAL STYLES ===== */
 * {
   margin: 0;
   padding: 0;
@@ -6,396 +6,550 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Body Styling */
 body {
   background: #f0f2f5;
   color: #333;
   line-height: 1.6;
 }
 
-/* Main Layout Container (Flexbox for Sidebar and Main Content) */
+/* ===== LAYOUT ===== */
 .kalender-container {
-  display: flex; /* Menggunakan Flexbox untuk menempatkan sidebar dan main-content berdampingan */
-  min-height: 100vh; /* Memastikan container setidaknya setinggi viewport */
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-/* Main Content Area Styling */
 .main-content {
-  margin-left: 180px; /* sesuai lebar sidebar */
+  margin-left: 240px;
   flex-grow: 1;
-  padding: 20px;
-  transition: all 0.3s; /* Animasi halus saat margin-left berubah (misalnya saat responsif) */
+  padding: 30px;
+  transition: all 0.3s;
 }
 
-/* Header Styling (Top Right Section) */
 .header {
-  display: flex;
-  justify-content: space-between; /* Menempatkan elemen di ujung-ujung */
-  align-items: center; /* Menyelaraskan vertikal di tengah */
   margin-bottom: 30px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #e0e0e0;
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
+.header h1 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin-bottom: 20px;
 }
 
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%; /* Membuat bentuk lingkaran */
-  background: #4361ee;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-  font-weight: bold;
-}
-
-/* Calendar Controls Styling */
+/* ===== CONTROLS ===== */
 .controls {
   background: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 35px;
   display: flex;
-  flex-wrap: wrap; /* Memungkinkan item untuk pecah baris jika ruang tidak cukup */
-  gap: 10px; /* Jarak antar item kontrol */
+  flex-wrap: wrap;
+  gap: 20px;
   justify-content: space-between;
   align-items: center;
 }
 
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 select,
 button {
-  padding: 8px 15px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
   background: white;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+select:focus,
+button:focus {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
 }
 
 .btn-nav {
   background: #4361ee;
   color: white;
   border: none;
-  cursor: pointer;
-}
-
-.calendar-nav {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  font-size: 18px;
 }
 
-/* Calendar Grid Styling */
+.btn-nav:hover {
+  background: #3a56d4;
+  transform: translateY(-2px);
+}
+
+.today-btn {
+  background: #4cc9f0;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-weight: 500;
+  border-radius: 10px;
+}
+
+.today-btn:hover {
+  background: #3ab3d8;
+  transform: translateY(-2px);
+}
+
+/* ===== LEGEND ===== */
+.legend {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  background: #f8f9ff;
+  padding: 15px 25px;
+  border-radius: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.legend-color.approved {
+  background: #00bcd4;
+}
+
+.legend-color.pending {
+  background: #ffd600;
+}
+
+.legend-color.rejected {
+  background: #f44336;
+}
+
+/* ===== CALENDAR GRID ===== */
 .calendar {
   display: grid;
-  grid-template-columns: repeat(7, 1fr); /* 7 kolom dengan lebar yang sama */
-  gap: 1px; /* Jarak tipis antar sel hari */
-  background: #e0e0e0; /* Latar belakang untuk garis pemisah */
-  border-radius: 8px;
-  overflow: hidden; /* Memastikan sudut border-radius terlihat rapi */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  background: #e2e8f0;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
 .header-day {
   background: #4361ee;
   color: white;
-  padding: 12px;
+  padding: 18px 10px;
   text-align: center;
   font-weight: 600;
+  font-size: 1rem;
 }
 
-.day {
+.calendar-cell {
   background: white;
-  padding: 10px;
-  min-height: 120px; /* Tinggi minimum untuk setiap hari */
+  padding: 15px;
+  min-height: 140px;
   position: relative;
-  transition: all 0.2s;
+  transition: all 0.3s;
 }
 
-.day:hover {
-  background: #f8f9ff;
-  z-index: 1; /* Memastikan hover state tidak terpotong oleh sibling */
-}
-
-.day-number {
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 5px;
-}
-
-.event-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #4361ee;
-  color: white;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-}
-
-.events-container {
-  max-height: 85px; /* Batas tinggi untuk daftar event di dalam hari */
-  overflow-y: auto; /* Memunculkan scrollbar jika event terlalu banyak */
-}
-
-.event-item {
-  font-size: 0.8rem;
-  padding: 4px 6px;
-  margin-bottom: 4px;
-  border-radius: 4px;
-  background: #f0f4ff;
-  white-space: nowrap; /* Mencegah teks event pecah baris */
-  overflow: hidden; /* Menyembunyikan teks yang melampaui batas */
-  text-overflow: ellipsis; /* Menambahkan "..." jika teks terlalu panjang */
+.calendar-cell.clickable {
   cursor: pointer;
 }
 
-.event-pending {
-  background: #fff8e1;
-  border-left: 3px solid #ffd166;
+.calendar-cell.clickable:hover {
+  background: #f5f7ff;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(67, 97, 238, 0.15);
+  z-index: 2;
 }
 
-.event-approved {
-  background: #e8f5e9;
-  border-left: 3px solid #06d6a0;
+.date-number {
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  text-align: center;
+  line-height: 36px;
 }
 
-.event-rejected {
-  background: #ffebee;
-  border-left: 3px solid #ef476f;
-}
-
-.today .day-number {
+.today .date-number {
   background: #4361ee;
   color: white;
-  width: 30px;
-  height: 30px;
   border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .weekend {
-  background: #f9f9ff;
+  background: #f8f9ff;
 }
 
-/* Modal Styling */
+.rental-badge {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  transition: transform 0.3s;
+}
+
+.calendar-cell.clickable:hover .rental-badge {
+  transform: translateX(5px);
+}
+
+.calendar-cell.empty {
+  background: #f9f9f9;
+}
+
+/* Status Colors */
+.status-approved {
+  background: #e0f7fa;
+  color: #00838f;
+  border-left: 4px solid #00bcd4;
+}
+
+.status-pending {
+  background: #fffde7;
+  color: #f57f17;
+  border-left: 4px solid #ffd600;
+}
+
+.status-rejected {
+  background: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #f44336;
+}
+
+/* ===== MODAL STYLES ===== */
 .modal {
-  display: none; /* Sembunyikan secara default */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Overlay gelap */
+  background: rgba(0, 0, 0, 0.75);
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
 .modal.active {
-  display: flex; /* Tampilkan modal saat aktif */
+  display: flex;
 }
 
 .modal-content {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 30px;
+  border-radius: 18px;
   width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
+  max-width: 700px;
+  max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 0.4s ease-out;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
   border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+  font-size: 1.8rem;
+  color: #2d3748;
 }
 
 .close-modal {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
-  color: #888;
+  color: #777;
+  transition: all 0.3s;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-modal:hover {
+  color: #333;
+  background: #f5f5f5;
+  transform: rotate(90deg);
+}
+
+/* Rental List Container */
+#rentalDetailContent {
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 10px 5px;
 }
 
 .rental-entry {
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  background: #f9f9f9;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.rental-entry:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.rental-entry::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+}
+
+.rental-entry.status-approved::before {
+  background: #00bcd4;
+}
+
+.rental-entry.status-pending::before {
+  background: #ffd600;
+}
+
+.rental-entry.status-rejected::before {
+  background: #f44336;
 }
 
 .rental-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
-.rental-title {
-  font-weight: 600;
+.rental-header h4 {
+  font-size: 1.4rem;
   color: #4361ee;
   margin: 0;
+  font-weight: 600;
 }
 
 .rental-status {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.status-pending {
-  background: #fff8e1;
-  color: #b38b00;
-}
-
-.status-approved {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-rejected {
-  background: #ffebee;
-  color: #c62828;
+  padding: 8px 18px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .rental-details {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 10px;
+  font-size: 1.05rem;
+  color: #4a5568;
+  line-height: 1.8;
 }
 
-/* Button Styling */
-.btn {
-  padding: 8px 15px;
-  margin-top: 8px;
-  margin-right: 8px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-
-.btn-approve {
-  background: var(--success); /* Menggunakan variabel CSS dari :root */
-  color: white;
-}
-
-.btn-reject {
-  background: #ef476f;
-  color: white;
-}
-
-.btn-close {
-  background: #e0e0e0;
-  color: #333;
-  margin-top: 15px;
-}
-
-.btn:hover {
-  opacity: 0.9;
+.rental-details strong {
+  color: #2d3748;
+  font-weight: 600;
 }
 
 .empty-state {
   text-align: center;
-  padding: 20px;
-  color: #888;
+  padding: 40px 20px;
+  color: #718096;
+  font-size: 1.2rem;
+}
+
+.empty-state p {
+  margin-bottom: 20px;
+}
+
+/* Button Styling */
+.btn {
+  padding: 15px 30px;
+  margin-top: 30px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  background: #4361ee;
+  color: white;
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  margin: 30px auto 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  background: #3a56d4;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(67, 97, 238, 0.35);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-content {
+  animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.rental-entry {
+  animation: fadeIn 0.5s ease-out;
 }
 
 /* ===== RESPONSIVE STYLES ===== */
-
-/* Mobile Toggle Button (untuk tombol menu mobile) */
-.mobile-toggle {
-  display: none; /* Sembunyikan secara default pada desktop */
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1100;
-  background: #4361ee;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  width: 40px;
-  height: 40px;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-/* Desktop Styles (min-width: 769px) */
-@media (min-width: 769px) {
-  .main-content {
-    /* **PERBAIKAN UTAMA DI SINI:** */
-    /* Menyesuaikan margin-left agar sama dengan lebar sidebar (240px) */
-    margin-left: 125px;
-  }
-
-  .mobile-toggle {
-    display: none; /* Pastikan tombol mobile toggle tersembunyi di desktop */
+@media (max-width: 1200px) {
+  .calendar-cell {
+    min-height: 120px;
   }
 }
 
-/* Tablet & Mobile Styles (max-width: 768px) */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .main-content {
-    margin-left: 0; /* Tidak ada margin kiri pada mobile saat sidebar tersembunyi */
-    padding: 20px 15px; /* Padding disesuaikan untuk layar kecil */
-  }
-
-  .mobile-toggle {
-    display: block; /* Tampilkan tombol toggle mobile */
-  }
-
-  .calendar {
-    grid-template-columns: repeat(
-      1,
-      1fr
-    ); /* 1 kolom per baris untuk kalender */
-  }
-
-  .header-day {
-    display: none; /* Sembunyikan nama hari (Minggu, Senin, dll.) pada tampilan kalender 1 kolom */
+    padding: 25px;
   }
 
   .controls {
-    flex-direction: column; /* Kontrol ditumpuk vertikal */
-    align-items: stretch; /* Memanjang untuk mengisi lebar */
+    padding: 20px;
+  }
+
+  .calendar-cell {
+    min-height: 110px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.7rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
   }
 
   .calendar-nav {
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .calendar {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .header-day {
+    display: none;
+  }
+
+  .calendar-cell {
+    min-height: auto;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .date-number {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  .modal-content {
+    padding: 25px;
+  }
+
+  .rental-entry {
+    padding: 20px;
   }
 }
 
-/* Small Mobile Styles (max-width: 480px) */
-@media (max-width: 480px) {
-  .header {
-    flex-direction: column; /* Header ditumpuk vertikal */
-    align-items: flex-start; /* Elemen header dimulai dari kiri */
+@media (max-width: 576px) {
+  .main-content {
+    padding: 15px;
   }
 
-  .user-info {
-    margin-top: 10px; /* Jarak dari elemen di atasnya */
+  .header h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .calendar-nav {
+    gap: 8px;
+  }
+
+  select,
+  button {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .legend {
+    gap: 15px;
+    padding: 12px 18px;
+    justify-content: center;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 20px 15px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.4rem;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    font-size: 1rem;
   }
 }

@@ -1,369 +1,260 @@
-// Inisialisasi variabel
-const calendarEl = document.getElementById("calendar");
-const modal = document.getElementById("detailModal");
+// DOM elements
+const calendar = document.getElementById("calendar");
 const monthSelect = document.getElementById("monthSelect");
 const yearSelect = document.getElementById("yearSelect");
-const rentalList = document.getElementById("rentalList");
 const prevMonthBtn = document.getElementById("prevMonth");
 const nextMonthBtn = document.getElementById("nextMonth");
 const todayBtn = document.getElementById("todayBtn");
 
-const monthNames = [
-  "Januari",
-  "Februari",
-  "Maret",
-  "April",
-  "Mei",
-  "Juni",
-  "Juli",
-  "Agustus",
-  "September",
-  "Oktober",
-  "November",
-  "Desember",
-];
-const dayNames = [
-  "Minggu",
-  "Senin",
-  "Selasa",
-  "Rabu",
-  "Kamis",
-  "Jumat",
-  "Sabtu",
-];
+// Current date
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
-let currentDate = new Date();
-let currentMonth = currentDate.getMonth();
-let currentYear = currentDate.getFullYear();
+// Days of the week
+const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
-// Ambil data penyewaan dari server
-function fetchRentals() {
-  fetch("get-rentals.php")
-    .then((response) => response.json())
-    .then((data) => {
-      rentals = data;
-      generateCalendar(currentMonth, currentYear);
-    })
-    .catch((error) => {
-      console.error("Error fetching rentals:", error);
-      rentals = [];
-      generateCalendar(currentMonth, currentYear);
-    });
-}
-
-// Setup dropdown bulan dan tahun
-function setupSelects() {
-  monthSelect.innerHTML = "";
-  yearSelect.innerHTML = "";
-
-  monthNames.forEach((name, index) => {
-    const option = document.createElement("option");
-    option.value = index;
-    option.textContent = name;
-    if (index === currentMonth) {
-      option.selected = true;
-    }
-    monthSelect.appendChild(option);
-  });
-
-  for (let year = currentYear - 5; year <= currentYear + 5; year++) {
-    const option = document.createElement("option");
-    option.value = year;
-    option.textContent = year;
-    if (year === currentYear) {
-      option.selected = true;
-    }
-    yearSelect.appendChild(option);
-  }
-}
-
-// Generate kalender
-function generateCalendar(month, year) {
-  calendarEl.innerHTML = "";
-
-  // Header hari
-  dayNames.forEach((day) => {
-    const headerDay = document.createElement("div");
-    headerDay.className = "header-day";
-    headerDay.textContent = day;
-    calendarEl.appendChild(headerDay);
-  });
-
-  const firstDay = new Date(year, month, 1);
-  const lastDate = new Date(year, month + 1, 0).getDate();
-  const startDay = firstDay.getDay();
-
-  // Hari kosong di awal bulan
-  for (let i = 0; i < startDay; i++) {
-    const emptyDiv = document.createElement("div");
-    emptyDiv.className = "day";
-    calendarEl.appendChild(emptyDiv);
-  }
-
-  // Hari dalam bulan
-  const today = new Date();
-  for (let d = 1; d <= lastDate; d++) {
-    const dayDiv = document.createElement("div");
-    dayDiv.className = "day";
-
-    // Tambahkan kelas khusus untuk weekend
-    const dayIndex = new Date(year, month, d).getDay();
-    if (dayIndex === 0 || dayIndex === 6) {
-      dayDiv.classList.add("weekend");
-    }
-
-    // Tambahkan kelas khusus untuk hari ini
-    if (
-      d === today.getDate() &&
-      month === today.getMonth() &&
-      year === today.getFullYear()
-    ) {
-      dayDiv.classList.add("today");
-    }
-
-    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-      d
-    ).padStart(2, "0")}`;
-    dayDiv.innerHTML = `
-            <div class="day-number">${d}</div>
-            <div class="event-badge">0</div>
-            <div class="events-container"></div>
-        `;
-
-    dayDiv.onclick = () => openModal(dateStr);
-    calendarEl.appendChild(dayDiv);
-  }
-
-  // Load events
-  loadEvents(month, year);
-}
-
-// Load events untuk bulan tertentu
-function loadEvents(month, year) {
-  const eventsByDate = {};
-
-  // Proses setiap event
-  rentals.forEach((rental) => {
-    const start = new Date(rental.start_date);
-    const end = new Date(rental.end_date);
-
-    let current = new Date(start);
-    while (current <= end) {
-      const dateStr = current.toISOString().split("T")[0];
-
-      // Hanya proses jika dalam bulan dan tahun yang ditampilkan
-      if (current.getMonth() === month && current.getFullYear() === year) {
-        if (!eventsByDate[dateStr]) {
-          eventsByDate[dateStr] = [];
-        }
-        eventsByDate[dateStr].push(rental);
-      }
-      current.setDate(current.getDate() + 1);
-    }
-  });
-
-  // Tampilkan events di kalender
-  for (const dateStr in eventsByDate) {
-    const dayNumber = parseInt(dateStr.split("-")[2]);
-    const dayEls = document.querySelectorAll(".day .day-number");
-
-    for (const dayEl of dayEls) {
-      if (parseInt(dayEl.textContent) === dayNumber) {
-        const dayContainer = dayEl.parentElement;
-        const badge = dayContainer.querySelector(".event-badge");
-        const eventsContainer = dayContainer.querySelector(".events-container");
-
-        badge.textContent = eventsByDate[dateStr].length;
-
-        eventsByDate[dateStr].forEach((rental) => {
-          const eventItem = document.createElement("div");
-          eventItem.className = `event-item ${getEventClass(rental)}`;
-          eventItem.textContent = `${rental.item_name} - ${rental.user_name}`;
-          eventItem.onclick = (e) => {
-            e.stopPropagation();
-            openModal(dateStr, rental.id);
-          };
-          eventsContainer.appendChild(eventItem);
-        });
-      }
-    }
-  }
-}
-
-// Dapatkan kelas CSS berdasarkan status event
-function getEventClass(rental) {
-  if (rental.status === "ditolak") return "event-rejected";
-  if (rental.confirmed_by_admin) return "event-approved";
-  return "event-pending";
-}
-
-// Dapatkan label status
-function getStatusLabel(rental) {
-  if (rental.status === "ditolak") return "Ditolak";
-  if (rental.confirmed_by_admin) return "Disetujui";
-  return "Menunggu Persetujuan";
-}
-
-// Buka modal detail
-function openModal(dateStr, rentalId = null) {
-  document.getElementById("modalDate").textContent = formatDate(dateStr);
-  rentalList.innerHTML = "";
-
-  // Filter rentals untuk tanggal yang dipilih
-  const date = new Date(dateStr);
-  const dailyRentals = rentals.filter((rental) => {
-    const start = new Date(rental.start_date);
-    const end = new Date(rental.end_date);
-    return date >= start && date <= end;
-  });
-
-  if (dailyRentals.length === 0) {
-    rentalList.innerHTML = `
-            <div class="empty-state">
-                <h4>Tidak ada penyewaan</h4>
-                <p>Tidak ada penyewaan yang ditemukan pada tanggal ini.</p>
-            </div>
-        `;
-  } else {
-    dailyRentals.forEach((rental) => {
-      const rentalEntry = document.createElement("div");
-      rentalEntry.className = "rental-entry";
-      rentalEntry.innerHTML = `
-                <div class="rental-header">
-                    <h4 class="rental-title">${rental.item_name}</h4>
-                    <div class="rental-status ${getStatusClass(
-                      rental
-                    )}">${getStatusLabel(rental)}</div>
-                </div>
-                <div class="rental-details">
-                    <div><strong>Penyewa:</strong> ${rental.user_name}</div>
-                    <div><strong>Periode:</strong> ${formatDate(
-                      rental.start_date
-                    )} s/d ${formatDate(rental.end_date)}</div>
-                </div>
-                ${
-                  !rental.confirmed_by_admin && rental.status !== "ditolak"
-                    ? `
-                <div class="rental-actions">
-                    <button class="btn btn-approve" onclick="confirmRental(${rental.id}, true)">
-                        Setujui
-                    </button>
-                    <button class="btn btn-reject" onclick="confirmRental(${rental.id}, false)">
-                        Tolak
-                    </button>
-                </div>
-                `
-                    : ""
-                }
-            `;
-      rentalList.appendChild(rentalEntry);
-    });
-  }
-
-  modal.classList.add("active");
-}
-
-// Dapatkan kelas status
-function getStatusClass(rental) {
-  if (rental.status === "ditolak") return "status-rejected";
-  if (rental.confirmed_by_admin) return "status-approved";
-  return "status-pending";
-}
-
-// Format tanggal untuk tampilan
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return `${date.getDate()} ${
-    monthNames[date.getMonth()]
-  } ${date.getFullYear()}`;
-}
-
-// Konfirmasi penyewaan (setujui/tolak)
-function confirmRental(id, approve) {
-  if (
-    confirm(
-      `Apakah Anda yakin ingin ${
-        approve ? "menyetujui" : "menolak"
-      } penyewaan ini?`
-    )
-  ) {
-    const url = approve
-      ? `approve-rental.php?id=${id}`
-      : `reject-rental.php?id=${id}`;
-
-    fetch(url)
-      .then((response) => {
-        if (response.ok) {
-          // Refresh data
-          fetchRentals();
-          // Tutup modal
-          closeModal();
-          alert(
-            `Penyewaan telah berhasil ${approve ? "disetujui" : "ditolak"}!`
-          );
-        } else {
-          throw new Error("Network response was not ok");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Terjadi kesalahan saat memproses permintaan");
-      });
-  }
-}
-
-// Tutup modal
-function closeModal() {
-  modal.classList.remove("active");
-}
-
-// Navigasi bulan
-function navigateMonth(direction) {
-  if (direction === "prev") {
-    currentMonth--;
-    if (currentMonth < 0) {
-      currentMonth = 11;
-      currentYear--;
-    }
-  } else if (direction === "next") {
-    currentMonth++;
-    if (currentMonth > 11) {
-      currentMonth = 0;
-      currentYear++;
-    }
-  }
-
-  monthSelect.value = currentMonth;
-  yearSelect.value = currentYear;
-  generateCalendar(currentMonth, currentYear);
-}
-
-// Kembali ke bulan saat ini
-function goToToday() {
-  const today = new Date();
-  currentMonth = today.getMonth();
-  currentYear = today.getFullYear();
-
-  monthSelect.value = currentMonth;
-  yearSelect.value = currentYear;
-  generateCalendar(currentMonth, currentYear);
-}
+// Initialize
+populateMonthYearSelect();
+renderCalendar(currentMonth, currentYear);
 
 // Event listeners
 monthSelect.addEventListener("change", () => {
   currentMonth = parseInt(monthSelect.value);
-  generateCalendar(currentMonth, currentYear);
+  renderCalendar(currentMonth, currentYear);
 });
 
 yearSelect.addEventListener("change", () => {
   currentYear = parseInt(yearSelect.value);
-  generateCalendar(currentMonth, currentYear);
+  renderCalendar(currentMonth, currentYear);
 });
 
-prevMonthBtn.addEventListener("click", () => navigateMonth("prev"));
-nextMonthBtn.addEventListener("click", () => navigateMonth("next"));
-todayBtn.addEventListener("click", goToToday);
+prevMonthBtn.addEventListener("click", () => {
+  currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  if (currentMonth === 11) currentYear--;
+  updateSelects();
+  renderCalendar(currentMonth, currentYear);
+});
 
-// Inisialisasi
-setupSelects();
-fetchRentals();
+nextMonthBtn.addEventListener("click", () => {
+  currentMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+  if (currentMonth === 0) currentYear++;
+  updateSelects();
+  renderCalendar(currentMonth, currentYear);
+});
+
+todayBtn.addEventListener("click", () => {
+  const now = new Date();
+  currentMonth = now.getMonth();
+  currentYear = now.getFullYear();
+  updateSelects();
+  renderCalendar(currentMonth, currentYear);
+});
+
+// Functions
+function populateMonthYearSelect() {
+  const months = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
+
+  months.forEach((name, i) => {
+    let opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = name;
+    if (i === currentMonth) opt.selected = true;
+    monthSelect.appendChild(opt);
+  });
+
+  for (let y = currentYear - 5; y <= currentYear + 5; y++) {
+    let opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    if (y === currentYear) opt.selected = true;
+    yearSelect.appendChild(opt);
+  }
+}
+
+function updateSelects() {
+  monthSelect.value = currentMonth;
+  yearSelect.value = currentYear;
+}
+
+function renderCalendar(month, year) {
+  calendar.innerHTML = "";
+
+  // Create header days
+  days.forEach((day) => {
+    const headerCell = document.createElement("div");
+    headerCell.className = "header-day";
+    headerCell.textContent = day;
+    calendar.appendChild(headerCell);
+  });
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const totalDays = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+
+  for (let i = 0; i < 42; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("calendar-cell");
+    const dateNumber = i - firstDay + 1;
+    const isToday =
+      today.getDate() === dateNumber &&
+      today.getMonth() === month &&
+      today.getFullYear() === year;
+
+    if (i >= firstDay && dateNumber <= totalDays) {
+      const fullDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+        dateNumber
+      ).padStart(2, "0")}`;
+
+      // Add date number
+      const dateNumDiv = document.createElement("div");
+      dateNumDiv.className = "date-number";
+      if (isToday) dateNumDiv.classList.add("today");
+      dateNumDiv.textContent = dateNumber;
+      cell.appendChild(dateNumDiv);
+
+      // Check if it's weekend
+      const dayOfWeek = new Date(year, month, dateNumber).getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        cell.classList.add("weekend");
+      }
+
+      // Find rentals for this date
+      const itemsToday = rentalData.filter((item) => {
+        const current = new Date(fullDate);
+        const start = new Date(item.start_date);
+        const end = new Date(item.end_date);
+        return current >= start && current <= end;
+      });
+
+      if (itemsToday.length > 0) {
+        itemsToday.forEach((item) => {
+          const badge = document.createElement("div");
+          badge.className = `rental-badge ${getStatusClass(item.status)}`;
+          badge.textContent = item.item_name;
+          cell.appendChild(badge);
+        });
+
+        cell.classList.add("clickable");
+        cell.addEventListener("click", () => showDetail(fullDate));
+      }
+    } else {
+      cell.classList.add("empty");
+    }
+
+    calendar.appendChild(cell);
+  }
+}
+
+function getStatusClass(status) {
+  switch (status) {
+    case "disewa":
+    case "selesai":
+      return "status-approved";
+    case "menunggu pembayaran":
+      return "status-pending";
+    case "ditolak":
+      return "status-rejected";
+    default:
+      return "";
+  }
+}
+
+function showDetail(dateStr) {
+  const date = new Date(dateStr);
+  const options = { day: "numeric", month: "long", year: "numeric" };
+  const formattedDate = date.toLocaleDateString("id-ID", options);
+
+  // Update modal title
+  document.getElementById(
+    "modalTitle"
+  ).textContent = `Detail Penyewaan - ${formattedDate}`;
+
+  // Find rentals for this date
+  const items = rentalData.filter((item) => {
+    const start = new Date(item.start_date);
+    const end = new Date(item.end_date);
+    const current = new Date(dateStr);
+    return current >= start && current <= end;
+  });
+
+  const detailContainer = document.getElementById("rentalDetailContent");
+  detailContainer.innerHTML = "";
+
+  if (items.length > 0) {
+    items.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = `rental-entry ${getStatusClass(item.status)}`;
+      div.innerHTML = `
+                <div class="rental-header">
+                    <h4>${item.item_name}</h4>
+                    <div class="rental-status ${getStatusClass(item.status)}">
+                        ${formatStatus(item.status)}
+                    </div>
+                </div>
+                <div class="rental-details">
+                    <strong>Penyewa:</strong> ${item.penyewa_name || "N/A"}<br>
+                    <strong>Periode:</strong> ${formatDate(
+                      item.start_date
+                    )} s/d ${formatDate(item.end_date)}<br>
+                    <strong>Durasi:</strong> ${calculateDuration(
+                      item.start_date,
+                      item.end_date
+                    )} hari
+                </div>
+            `;
+      detailContainer.appendChild(div);
+    });
+  } else {
+    detailContainer.innerHTML = `
+            <div class="empty-state">
+                <p>Tidak ada penyewaan di tanggal ini</p>
+            </div>
+        `;
+  }
+
+  // Show modal
+  document.getElementById("detailModal").classList.add("active");
+}
+
+function formatStatus(status) {
+  const statusMap = {
+    disewa: "Disetujui",
+    selesai: "Selesai",
+    "menunggu pembayaran": "Menunggu Pembayaran",
+    ditolak: "Ditolak",
+  };
+  return statusMap[status] || status;
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function calculateDuration(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diff = end - start;
+  return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
+}
+
+function closeModal() {
+  document.getElementById("detailModal").classList.remove("active");
+}
