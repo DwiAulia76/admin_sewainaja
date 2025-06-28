@@ -36,6 +36,105 @@ body {
   margin-bottom: 20px;
 }
 
+/* ===== SEARCH STYLES ===== */
+.search-container {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.search-box {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 15px 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  font-size: 16px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.search-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.search-btn,
+.reset-btn {
+  padding: 15px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-btn {
+  background: #4361ee;
+  color: white;
+  border: none;
+}
+
+.search-btn:hover {
+  background: #3a56d4;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(67, 97, 238, 0.25);
+}
+
+.reset-btn {
+  background: #f0f2f5;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+.reset-btn:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+}
+
+.search-filters {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  padding-top: 15px;
+  border-top: 1px solid #f0f4ff;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.filter-group select {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  font-size: 15px;
+  min-width: 180px;
+}
+
 /* ===== CONTROLS ===== */
 .controls {
   background: white;
@@ -472,6 +571,35 @@ button:focus {
 @media (max-width: 768px) {
   .header h1 {
     font-size: 1.7rem;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-actions {
+    width: 100%;
+  }
+
+  .search-btn,
+  .reset-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .search-filters {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .filter-group select {
+    width: 100%;
   }
 
   .controls {

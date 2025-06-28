@@ -6,6 +6,13 @@ const prevMonthBtn = document.getElementById("prevMonth");
 const nextMonthBtn = document.getElementById("nextMonth");
 const todayBtn = document.getElementById("todayBtn");
 
+// Search elements
+const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
+const resetButton = document.getElementById("resetButton");
+const filterBy = document.getElementById("filterBy");
+const statusFilter = document.getElementById("statusFilter");
+
 // Current date
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -49,6 +56,17 @@ todayBtn.addEventListener("click", () => {
   updateSelects();
   renderCalendar(currentMonth, currentYear);
 });
+
+// Event listeners for search
+searchButton.addEventListener("click", performSearch);
+resetButton.addEventListener("click", resetSearch);
+searchInput.addEventListener("keyup", function (event) {
+  if (event.key === "Enter") {
+    performSearch();
+  }
+});
+filterBy.addEventListener("change", performSearch);
+statusFilter.addEventListener("change", performSearch);
 
 // Functions
 function populateMonthYearSelect() {
@@ -132,7 +150,7 @@ function renderCalendar(month, year) {
       }
 
       // Find rentals for this date
-      const itemsToday = rentalData.filter((item) => {
+      const itemsToday = filteredRentalData.filter((item) => {
         const current = new Date(fullDate);
         const start = new Date(item.start_date);
         const end = new Date(item.end_date);
@@ -183,7 +201,7 @@ function showDetail(dateStr) {
   ).textContent = `Detail Penyewaan - ${formattedDate}`;
 
   // Find rentals for this date
-  const items = rentalData.filter((item) => {
+  const items = filteredRentalData.filter((item) => {
     const start = new Date(item.start_date);
     const end = new Date(item.end_date);
     const current = new Date(dateStr);
@@ -227,6 +245,58 @@ function showDetail(dateStr) {
 
   // Show modal
   document.getElementById("detailModal").classList.add("active");
+}
+
+function performSearch() {
+  const searchTerm = searchInput.value.toLowerCase().trim();
+  const filterField = filterBy.value;
+  const statusValue = statusFilter.value;
+
+  // Reset filter jika tidak ada pencarian
+  if (!searchTerm && statusValue === "all") {
+    filteredRentalData = [...rentalData];
+    renderCalendar(currentMonth, currentYear);
+    return;
+  }
+
+  filteredRentalData = rentalData.filter((item) => {
+    // Filter berdasarkan status
+    if (statusValue !== "all" && item.status !== statusValue) {
+      return false;
+    }
+
+    // Jika tidak ada kata kunci pencarian
+    if (!searchTerm) return true;
+
+    // Filter berdasarkan kolom yang dipilih
+    if (filterField === "all") {
+      // Cari di semua kolom
+      return (
+        item.item_name.toLowerCase().includes(searchTerm) ||
+        item.penyewa_name.toLowerCase().includes(searchTerm) ||
+        item.status.toLowerCase().includes(searchTerm) ||
+        item.start_date.includes(searchTerm) ||
+        item.end_date.includes(searchTerm)
+      );
+    } else if (filterField === "status") {
+      // Format status ke bahasa Indonesia
+      const formattedStatus = formatStatus(item.status).toLowerCase();
+      return formattedStatus.includes(searchTerm);
+    } else {
+      // Cari di kolom tertentu
+      return String(item[filterField]).toLowerCase().includes(searchTerm);
+    }
+  });
+
+  renderCalendar(currentMonth, currentYear);
+}
+
+function resetSearch() {
+  searchInput.value = "";
+  filterBy.value = "all";
+  statusFilter.value = "all";
+  filteredRentalData = [...rentalData];
+  renderCalendar(currentMonth, currentYear);
 }
 
 function formatStatus(status) {
