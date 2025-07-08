@@ -2,7 +2,7 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Edit Barang</h2>
-        <form method="post" action="./config/edit_item.php" enctype="multipart/form-data">
+        <form method="post" action="./backweb/edit_item.php" enctype="multipart/form-data">
             <input type="hidden" name="id" id="editId">
             <input type="hidden" name="existing_photo" id="existingPhoto">
             

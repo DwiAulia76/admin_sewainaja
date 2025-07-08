@@ -1,24 +1,29 @@
 <?php
-$host = 'localhost';
-$db   = 'adminsewainaja_app';
-$user = 'root'; // Ganti dengan username database Anda
-$pass = '';     // Ganti dengan password database Anda
-$charset = 'utf8mb4';
+class Database {
+    private $host = 'localhost';
+    private $db   = 'adminsewainaja_app';
+    private $user = 'root';
+    private $pass = '';
+    private $charset = 'utf8mb4';
+    private $pdo;
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
+    public function __construct() {
+        $dsn = "mysql:host={$this->host};dbname={$this->db};charset={$this->charset}";
+        $options = [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
 
-try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (\PDOException $e) {
-    // Simpan error ke log
-    error_log("Database error: " . $e->getMessage());
-    // Tampilkan pesan ramah pengguna
-    die("Koneksi database gagal. Silakan coba lagi nanti.");
+        try {
+            $this->pdo = new PDO($dsn, $this->user, $this->pass, $options);
+        } catch (\PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            die("Koneksi database gagal. Silakan coba lagi nanti.");
+        }
+    }
 
+    public function getConnection() {
+        return $this->pdo;
+    }
 }
-?>

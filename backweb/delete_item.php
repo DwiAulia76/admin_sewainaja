@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once './database.php';
+require_once '../config/database.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header('Location: /admin_sewainaja/auth/login.php');
@@ -12,30 +12,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $adminId = $_SESSION['user_id'];
 
     try {
-        // Mulai transaksi
-        $pdo->beginTransaction();
-
+        $pdo = (new Database())->getConnection();
+        
         // Ambil informasi foto sebelum menghapus
-        $stmt = $pdo->prepare("SELECT photo FROM items WHERE id = ? AND admin_id = ?");
+        $stmt = $pdo->prepare("SELECT image FROM products WHERE id = ? AND owner_id = ?");
         $stmt->execute([$id, $adminId]);
         $item = $stmt->fetch();
 
         // Hapus dari database
-        $stmt = $pdo->prepare("DELETE FROM items WHERE id = ? AND admin_id = ?");
+        $stmt = $pdo->prepare("DELETE FROM products WHERE id = ? AND owner_id = ?");
         $stmt->execute([$id, $adminId]);
 
         // Hapus foto jika ada
-        if ($item && !empty($item['photo']) && file_exists('../' . $item['photo'])) {
-            unlink('../' . $item['photo']);
+        if ($item && !empty($item['image']) && file_exists('../public/' . $item['image'])) {
+            unlink('../public/' . $item['image']);
         }
-
-        // Commit transaksi
-        $pdo->commit();
 
         $_SESSION['success'] = "Barang berhasil dihapus";
     } catch (Exception $e) {
-        // Rollback jika ada error
-        $pdo->rollBack();
         $_SESSION['error'] = "Gagal menghapus barang: " . $e->getMessage();
     }
 

@@ -2,7 +2,7 @@
     <div class="modal-content">
         <span class="close-button" id="closeModal">&times;</span>
         <h2>Tambah Barang</h2>
-        <form id="addItemForm" action="config/add_item.php" method="POST" enctype="multipart/form-data">
+        <form id="addItemForm" action="backweb/add_item.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Nama:</label>
                 <input type="text" id="name" name="name" required>

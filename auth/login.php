@@ -2,6 +2,10 @@
 session_start();
 include '../config/database.php';
 
+// Create a new Database instance and get the PDO connection
+$database = new Database();
+$pdo = $database->getConnection();
+
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];

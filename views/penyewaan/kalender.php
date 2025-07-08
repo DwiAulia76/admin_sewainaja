@@ -1,12 +1,16 @@
 <?php
+require_once '../config/database.php';
+
+$pdo = (new Database())->getConnection();
+
 $stmt = $pdo->prepare("
-    SELECT r.*, i.name AS item_name, u.name AS penyewa_name
-    FROM rentals r
-    JOIN items i ON r.item_id = i.id
-    JOIN users u ON r.penyewa_id = u.id
+    SELECT t.*, p.name AS product_name, u.name AS user_name
+    FROM transactions t
+    JOIN products p ON t.product_id = p.id
+    JOIN users u ON t.user_id = u.id
 ");
 $stmt->execute();
-$rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div class="kalender-container">

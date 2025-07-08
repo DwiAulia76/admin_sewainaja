@@ -1,9 +1,9 @@
 <?php
 include './auth/auth.php'; 
-require_once './config/database.php';
+require_once '../config/database.php';
 
-// Query untuk mengambil data items
-$stmt = $pdo->query("SELECT id, name, description, category, price_per_day, status, photo FROM items");
+$pdo = (new Database())->getConnection();
+$stmt = $pdo->query("SELECT * FROM products");
 $items = $stmt->fetchAll();
 ?>
 
@@ -25,31 +25,23 @@ $items = $stmt->fetchAll();
 <div class="card-grid" id="cardGrid">
     <?php foreach ($items as $item): ?>
         <div class="card" data-name="<?= htmlspecialchars(strtolower($item['name'])) ?>" 
-            data-category="<?= htmlspecialchars(strtolower($item['category'])) ?>" 
-            data-status="<?= htmlspecialchars(strtolower($item['status'])) ?>">
-
+            data-category="<?= htmlspecialchars(strtolower($item['category'])) ?>">
+            
             <div class="meta-container">
-                <div class="status <?= $item['status'] ?>"><?= ucfirst($item['status']) ?></div>
-            <div class="category"><?= htmlspecialchars($item['category']) ?></div>
+                <div class="category"><?= htmlspecialchars($item['category']) ?></div>
+                <div class="stock">Stok: <?= $item['stock'] ?></div>
             </div>
             
             <h3><?= htmlspecialchars($item['name']) ?></h3>
             
             <div class="image-container">
-    <div class="image-container">
-        <?php
-            // Path URL dari file gambar
-            $imagePath = '/admin_sewainaja/public/' . $item['photo']; // contoh: uploads/nama.jpg
-            if (!empty($item['photo'])) {
-                echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($item['name']) . '">';
-            } else {
-                echo '<div class="no-image">Tidak ada gambar</div>';
-            }
-        ?>
-        </div>
-
-</div>
-
+                <?php if (!empty($item['image'])): ?>
+                    <img src="/admin_sewainaja/public/<?= htmlspecialchars($item['image']) ?>" 
+                         alt="<?= htmlspecialchars($item['name']) ?>">
+                <?php else: ?>
+                    <div class="no-image">Tidak ada gambar</div>
+                <?php endif; ?>
+            </div>
             
             <div class="description"><?= htmlspecialchars($item['description']) ?></div>
             <div class="price">Rp <?= number_format($item['price_per_day'], 0, ',', '.') ?> /hari</div>
@@ -59,13 +51,13 @@ $items = $stmt->fetchAll();
                         data-desc="<?= htmlspecialchars($item['description']) ?>"
                         data-cat="<?= htmlspecialchars($item['category']) ?>"
                         data-price="<?= $item['price_per_day'] ?>"
-                        data-status="<?= $item['status'] ?>"
-                        data-photo="<?= htmlspecialchars($item['photo']) ?>">
+                        data-stock="<?= $item['stock'] ?>"
+                        data-photo="<?= htmlspecialchars($item['image']) ?>">
                     Edit
                 </button>
                 <form method="post" action="./config/delete_item.php" class="delete-form">
                     <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                    <button type="submit" class="delete" >Hapus</button>
+                    <button type="submit" class="delete">Hapus</button>
                 </form>
             </div>
         </div>

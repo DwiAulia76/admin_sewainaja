@@ -7,17 +7,7 @@
     <title>Admin Panel - Dashboard</title>
     <link rel="stylesheet" href="public/assets/css/sidebarStyle.css">
     <link rel="stylesheet" href="public/assets/css/dashboardStyle.css">
-
-    <!-- Tambahkan CSS khusus dashboard jika ada -->
 </head>
-<script>
-    const sidebar = document.querySelector('.sidebar');
-    const toggleBtn = document.getElementById('sidebarToggle');
-
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-    });
-</script>
 <body>
     <button class="mobile-toggle" id="sidebarToggle">
         ☰
@@ -34,7 +24,6 @@
         <?php include 'views/dashboard/dashboard.php'; ?>
     </main>
 
-    <!-- Tambahkan JS khusus dashboard jika ada -->
     <script src="public/assets/js/sidebarScript.js"></script>
 </body>
 </html>

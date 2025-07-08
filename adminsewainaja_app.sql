@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 22 Jun 2025 pada 15.50
+-- Waktu pembuatan: 08 Jul 2025 pada 17.00
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -24,83 +24,77 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `items`
+-- Struktur dari tabel `addresses`
 --
 
-CREATE TABLE `items` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `admin_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `category` varchar(255) NOT NULL,
-  `price_per_day` decimal(10,2) NOT NULL,
-  `status` enum('tersedia','disewa') NOT NULL DEFAULT 'tersedia',
-  `photo` varchar(255) DEFAULT NULL,
-  `video` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `addresses` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `address` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `items`
+-- Dumping data untuk tabel `addresses`
 --
 
-INSERT INTO `items` (`id`, `admin_id`, `name`, `description`, `category`, `price_per_day`, `status`, `photo`, `video`, `created_at`, `updated_at`) VALUES
-(1, 1, 'blender', 'oren', 'elektronik', 130000.00, 'tersedia', 'uploads/685563a38c724_blender.png', '', '2025-06-13 10:01:15', '2025-06-20 08:35:31');
+INSERT INTO `addresses` (`id`, `user_id`, `address`) VALUES
+(1, 2, 'Jl. Merdeka No. 123, Jakarta Pusat'),
+(2, 3, 'Jl. Sudirman Kav. 22, Jakarta Selatan'),
+(3, 4, 'Komplek Permata Hijau Blok A1/5, Jakarta Barat'),
+(4, 5, 'Apartemen Taman Anggrek Tower B Lantai 10, Jakarta Barat');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `item_availabilities`
+-- Struktur dari tabel `identity_verifications`
 --
 
-CREATE TABLE `item_availabilities` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `item_id` bigint(20) UNSIGNED NOT NULL,
-  `date` date NOT NULL,
-  `status` enum('tersedia','disewa') NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `identity_verifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `nik` varchar(16) NOT NULL,
+  `identity_type` enum('KTP','SIM') NOT NULL,
+  `identity_file` varchar(255) NOT NULL,
+  `status` enum('pending','verified','rejected') DEFAULT 'pending',
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `item_availabilities`
+-- Dumping data untuk tabel `identity_verifications`
 --
 
-INSERT INTO `item_availabilities` (`id`, `item_id`, `date`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, '2025-06-13', 'tersedia', '2025-06-13 10:01:15', '2025-06-13 10:01:15');
+INSERT INTO `identity_verifications` (`id`, `user_id`, `nik`, `identity_type`, `identity_file`, `status`, `verified_at`, `created_at`) VALUES
+(1, 2, '3275010203040001', 'KTP', 'ktp_budi.jpg', 'verified', '2025-01-15 07:30:00', '2025-07-08 14:15:15'),
+(2, 3, '3275020304050002', 'KTP', 'ktp_siti.jpg', 'verified', '2025-02-20 03:15:00', '2025-07-08 14:15:15'),
+(3, 4, '3275030405060003', 'KTP', 'ktp_ahmad.jpg', 'rejected', NULL, '2025-07-08 14:15:15'),
+(4, 5, '3275040506070004', 'SIM', 'sim_dewi.jpg', 'pending', NULL, '2025-07-08 14:15:15');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `messages`
+-- Struktur dari tabel `otp_codes`
 --
 
-CREATE TABLE `messages` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `sender_id` bigint(20) UNSIGNED NOT NULL,
-  `receiver_id` bigint(20) UNSIGNED NOT NULL,
-  `message` text NOT NULL,
-  `sent_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
+CREATE TABLE `otp_codes` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `otp_code` varchar(6) NOT NULL,
+  `is_used` tinyint(1) DEFAULT 0,
+  `expired_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Struktur dari tabel `notifications`
+-- Dumping data untuk tabel `otp_codes`
 --
 
-CREATE TABLE `notifications` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `type` enum('jatuh tempo','konfirmasi pengiriman','pengingat pengembalian') NOT NULL,
-  `message` text NOT NULL,
-  `is_read` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `otp_codes` (`id`, `user_id`, `phone`, `otp_code`, `is_used`, `expired_at`, `created_at`) VALUES
+(1, 2, '081298765432', 'A3B9C2', 1, '2025-07-08 03:05:00', '2025-07-08 14:15:15'),
+(2, 3, '085678912345', 'D4E8F1', 0, '2025-07-08 04:15:00', '2025-07-08 14:15:15'),
+(3, 4, '087812345679', 'G7H2J5', 0, '2025-07-07 02:00:00', '2025-07-08 14:15:15'),
+(4, 5, '089612345678', 'K9L3M8', 1, '2025-07-06 07:30:00', '2025-07-08 14:15:15');
 
 -- --------------------------------------------------------
 
@@ -109,54 +103,82 @@ CREATE TABLE `notifications` (
 --
 
 CREATE TABLE `payments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `rental_id` bigint(20) UNSIGNED NOT NULL,
+  `id` int(11) NOT NULL,
+  `transaction_id` varchar(20) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
-  `payment_date` datetime NOT NULL,
-  `status` enum('lunas','pending','gagal') NOT NULL DEFAULT 'pending',
-  `notified_due_date` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `payment_method` varchar(50) NOT NULL,
+  `payment_proof` varchar(255) NOT NULL,
+  `status` enum('pending','diterima','ditolak') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `payments`
+--
+
+INSERT INTO `payments` (`id`, `transaction_id`, `amount`, `payment_method`, `payment_proof`, `status`, `created_at`) VALUES
+(1, 'TRX001', 1250000.00, 'Transfer Bank', 'bukti_bayar_trx1.jpg', 'diterima', '2025-07-08 14:15:15'),
+(2, 'TRX002', 700000.00, 'E-Wallet', 'bukti_bayar_trx2.jpg', 'diterima', '2025-07-08 14:15:15'),
+(3, 'TRX003', 400000.00, 'Transfer Bank', 'bukti_bayar_trx3.jpg', 'pending', '2025-07-08 14:15:15'),
+(4, 'TRX004', 150000.00, 'E-Wallet', 'bukti_bayar_trx4.jpg', 'ditolak', '2025-07-08 14:15:15');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `rentals`
+-- Struktur dari tabel `products`
 --
 
-CREATE TABLE `rentals` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `item_id` bigint(20) UNSIGNED NOT NULL,
-  `penyewa_id` bigint(20) UNSIGNED NOT NULL,
-  `admin_id` bigint(20) UNSIGNED NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
-  `status` enum('menunggu pembayaran','disewa','selesai','terlambat') NOT NULL DEFAULT 'menunggu pembayaran',
-  `condition_before` varchar(255) DEFAULT NULL,
-  `condition_after` varchar(255) DEFAULT NULL,
-  `damage_report` text DEFAULT NULL,
-  `fine_amount` decimal(10,2) DEFAULT NULL,
-  `confirmed_by_admin` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `products` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `price_per_day` decimal(10,2) NOT NULL,
+  `category` varchar(50) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `stock` int(11) DEFAULT 1,
+  `owner_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `products`
+--
+
+INSERT INTO `products` (`id`, `name`, `description`, `price_per_day`, `category`, `image`, `stock`, `owner_id`, `created_at`, `updated_at`) VALUES
+(1, 'Canon EOS R5', 'Kamera mirrorless full-frame 45MP', 250000.00, 'kamera', 'canon_eos_r5.jpg', 3, 1, '2025-07-08 14:15:15', '2025-07-08 14:15:15'),
+(2, 'Sony A7 III', 'Kamera mirrorless 24MP dengan stabilisasi', 200000.00, 'kamera', 'sony_a7iii.jpg', 2, 1, '2025-07-08 14:15:15', '2025-07-08 14:15:15'),
+(3, 'DJI Mavic 3', 'Drone 4K dengan zoom 28x', 350000.00, 'drone', 'dji_mavic3.jpg', 1, 1, '2025-07-08 14:15:15', '2025-07-08 14:15:15'),
+(4, 'Godox SL60W', 'Lampu LED continuous 60W', 75000.00, 'lighting', 'godox_sl60w.jpg', 4, 1, '2025-07-08 14:15:15', '2025-07-08 14:15:15'),
+(5, 'Rode VideoMic Pro+', 'Mic shotgun dengan high-pass filter', 50000.00, 'audio', 'rode_videomic.jpg', 5, 1, '2025-07-08 14:15:15', '2025-07-08 14:15:15');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `rental_history`
+-- Struktur dari tabel `transactions`
 --
 
-CREATE TABLE `rental_history` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `penyewa_id` bigint(20) UNSIGNED NOT NULL,
-  `rental_id` bigint(20) UNSIGNED NOT NULL,
-  `summary` text NOT NULL,
-  `total_paid` decimal(10,2) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `transactions` (
+  `id` varchar(20) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `start_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `status` enum('pending','diproses','disewa','selesai','dibatalkan') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `user_id`, `product_id`, `start_date`, `end_date`, `total_price`, `status`, `created_at`) VALUES
+('TRX001', 2, 1, '2025-07-10 08:00:00', '2025-07-15 20:00:00', 1250000.00, 'disewa', '2025-07-08 14:15:15'),
+('TRX002', 3, 3, '2025-07-12 10:00:00', '2025-07-14 18:00:00', 700000.00, 'selesai', '2025-07-08 14:15:15'),
+('TRX003', 5, 2, '2025-07-11 09:00:00', '2025-07-13 17:00:00', 400000.00, 'diproses', '2025-07-08 14:15:15'),
+('TRX004', 2, 4, '2025-07-20 14:00:00', '2025-07-22 12:00:00', 150000.00, 'pending', '2025-07-08 14:15:15'),
+('TRX005', 3, 1, '2025-07-25 08:00:00', '2025-07-30 20:00:00', 1250000.00, 'dibatalkan', '2025-07-08 14:15:15');
 
 -- --------------------------------------------------------
 
@@ -165,192 +187,163 @@ CREATE TABLE `rental_history` (
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','penyewa') NOT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `identity_type` varchar(255) DEFAULT NULL COMMENT 'KTP/SIM',
-  `identity_file` varchar(255) DEFAULT NULL,
-  `verified` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `role` enum('admin','penyewa') NOT NULL DEFAULT 'penyewa',
+  `phone` varchar(20) DEFAULT NULL,
+  `is_verified` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `phone`, `address`, `identity_type`, `identity_file`, `verified`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Utama', 'admin@example.com', '$2y$12$EZnb44KnxKLFKo.5UUuCc.fPYgC2XkqQuccOPeLoIdaFOl06nQbOK', 'admin', '08123456789', 'Jl. Admin No.1', 'KTP', 'ktp_admin.jpg', 1, '2025-06-13 10:00:42', '2025-06-13 10:00:42');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `phone`, `is_verified`, `created_at`, `updated_at`) VALUES
+(1, 'Admin SewainAja', 'admin@sewainaja.com', 'password', 'admin', NULL, 0, '2025-07-08 14:10:20', '2025-07-08 14:10:20'),
+(2, 'Admin Utama', 'admin@sewain.com', 'password', 'admin', '081234567890', 1, '2025-07-08 14:15:15', '2025-07-08 14:15:47'),
+(3, 'Budi Santoso', 'budi@mail.com', 'password', 'penyewa', '081298765432', 1, '2025-07-08 14:15:15', '2025-07-08 14:16:03'),
+(4, 'Siti Rahayu', 'siti@mail.com', 'password', 'penyewa', '085678912345', 1, '2025-07-08 14:15:15', '2025-07-08 14:16:13'),
+(5, 'Ahmad Fauzi', 'ahmad@mail.com', 'password\r\n', 'penyewa', '087812345679', 0, '2025-07-08 14:15:15', '2025-07-08 14:16:44'),
+(6, 'Dewi Anggraini', 'dewi@mail.com', 'password\r\n', 'penyewa', '089612345678', 1, '2025-07-08 14:15:15', '2025-07-08 14:17:00');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `items`
+-- Indeks untuk tabel `addresses`
 --
-ALTER TABLE `items`
+ALTER TABLE `addresses`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `items_admin_id_foreign` (`admin_id`);
+  ADD KEY `user_id` (`user_id`);
 
 --
--- Indeks untuk tabel `item_availabilities`
+-- Indeks untuk tabel `identity_verifications`
 --
-ALTER TABLE `item_availabilities`
+ALTER TABLE `identity_verifications`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `item_availabilities_item_id_foreign` (`item_id`);
+  ADD KEY `user_id` (`user_id`);
 
 --
--- Indeks untuk tabel `messages`
+-- Indeks untuk tabel `otp_codes`
 --
-ALTER TABLE `messages`
+ALTER TABLE `otp_codes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `messages_sender_id_foreign` (`sender_id`),
-  ADD KEY `messages_receiver_id_foreign` (`receiver_id`);
-
---
--- Indeks untuk tabel `notifications`
---
-ALTER TABLE `notifications`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `notifications_user_id_foreign` (`user_id`);
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indeks untuk tabel `payments`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `payments_rental_id_foreign` (`rental_id`);
+  ADD KEY `transaction_id` (`transaction_id`);
 
 --
--- Indeks untuk tabel `rentals`
+-- Indeks untuk tabel `products`
 --
-ALTER TABLE `rentals`
+ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `rentals_item_id_foreign` (`item_id`),
-  ADD KEY `rentals_penyewa_id_foreign` (`penyewa_id`),
-  ADD KEY `rentals_admin_id_foreign` (`admin_id`);
+  ADD KEY `owner_id` (`owner_id`);
 
 --
--- Indeks untuk tabel `rental_history`
+-- Indeks untuk tabel `transactions`
 --
-ALTER TABLE `rental_history`
+ALTER TABLE `transactions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `rental_history_penyewa_id_foreign` (`penyewa_id`),
-  ADD KEY `rental_history_rental_id_foreign` (`rental_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `product_id` (`product_id`);
 
 --
 -- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT untuk tabel `items`
+-- AUTO_INCREMENT untuk tabel `addresses`
 --
-ALTER TABLE `items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+ALTER TABLE `addresses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `item_availabilities`
+-- AUTO_INCREMENT untuk tabel `identity_verifications`
 --
-ALTER TABLE `item_availabilities`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `identity_verifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `messages`
+-- AUTO_INCREMENT untuk tabel `otp_codes`
 --
-ALTER TABLE `messages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `notifications`
---
-ALTER TABLE `notifications`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `otp_codes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `rentals`
+-- AUTO_INCREMENT untuk tabel `products`
 --
-ALTER TABLE `rentals`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT untuk tabel `rental_history`
---
-ALTER TABLE `rental_history`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Ketidakleluasaan untuk tabel `items`
+-- Ketidakleluasaan untuk tabel `addresses`
 --
-ALTER TABLE `items`
-  ADD CONSTRAINT `items_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `addresses`
+  ADD CONSTRAINT `addresses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `item_availabilities`
+-- Ketidakleluasaan untuk tabel `identity_verifications`
 --
-ALTER TABLE `item_availabilities`
-  ADD CONSTRAINT `item_availabilities_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE;
+ALTER TABLE `identity_verifications`
+  ADD CONSTRAINT `identity_verifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `messages`
+-- Ketidakleluasaan untuk tabel `otp_codes`
 --
-ALTER TABLE `messages`
-  ADD CONSTRAINT `messages_receiver_id_foreign` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `messages_sender_id_foreign` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Ketidakleluasaan untuk tabel `notifications`
---
-ALTER TABLE `notifications`
-  ADD CONSTRAINT `notifications_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `otp_codes`
+  ADD CONSTRAINT `otp_codes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `payments`
 --
 ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_rental_id_foreign` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `rentals`
+-- Ketidakleluasaan untuk tabel `products`
 --
-ALTER TABLE `rentals`
-  ADD CONSTRAINT `rentals_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `rentals_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `rentals_penyewa_id_foreign` FOREIGN KEY (`penyewa_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `products`
+  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `rental_history`
+-- Ketidakleluasaan untuk tabel `transactions`
 --
-ALTER TABLE `rental_history`
-  ADD CONSTRAINT `rental_history_penyewa_id_foreign` FOREIGN KEY (`penyewa_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `rental_history_rental_id_foreign` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`id`) ON DELETE CASCADE;
+ALTER TABLE `transactions`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

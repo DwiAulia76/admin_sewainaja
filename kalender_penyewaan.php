@@ -8,6 +8,9 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     exit;
 }
 
+$database = new Database();
+$pdo = $database->getConnection();
+
 $active_page = 'kalender_penyewaan';
 ?>
 <!DOCTYPE html>
@@ -20,16 +23,18 @@ $active_page = 'kalender_penyewaan';
     <link rel="stylesheet" href="public/assets/css/kalender.css">
 </head>
 <body>
+    <button class="mobile-toggle" id="sidebarToggle">
+        ☰
+    </button>
 
-<?php include 'views/components/sidebar.php'; ?>
+    <?php include 'views/components/sidebar.php'; ?>
 
-<main class="main-content">
-    <?php include 'views/penyewaan/kalender.php'; ?>
-    <?php include 'views/penyewaan/modal_detail.php'; ?>
-</main>
+    <main class="main-content">
+        <?php include 'views/penyewaan/kalender.php'; ?>
+        <?php include 'views/penyewaan/modal_detail.php'; ?>
+    </main>
 
-<script src="public/assets/js/kalender.js"></script>
-<script src="public/assets/js/sidebarScript.js"></script>
-
+    <script src="public/assets/js/kalender.js"></script>
+    <script src="public/assets/js/sidebarScript.js"></script>
 </body>
 </html>

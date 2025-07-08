@@ -1,6 +1,9 @@
 <?php include './auth/auth.php'; ?>
 <?php
 require_once './config/database.php';
+$database = new Database();
+$pdo = $database->getConnection();
+
 $stmt = $pdo->query("SELECT * FROM items");
 $items = $stmt->fetchAll();
 ?>
