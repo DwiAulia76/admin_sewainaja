@@ -9,67 +9,71 @@ require_once __DIR__ . '/../config/database.php';
 $database = new Database();
 $pdo = $database->getConnection();
 
-$data = json_decode(file_get_contents("php://input"));
+$data = json_decode(file_get_contents("php://input"), true);
 
-if (!empty($data->email) && !empty($data->password)) {
-    $email = $data->email;
-    $password = $data->password;
+$email = $data['email'] ?? null;
+$password = $data['password'] ?? null;
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        http_response_code(400);
-        echo json_encode(["status" => "error", "message" => "Format email tidak valid"]);
-        exit();
-    }
-
-    $query = "SELECT id, name, email, password, role, is_verified FROM users WHERE email = :email";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-
-    if ($stmt->rowCount() > 0) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $hashed_password = $row['password'];
-        
-        if (password_verify($password, $hashed_password)) {
-            // Periksa status verifikasi HP
-            if ($row['is_verified'] != 1) {
-                http_response_code(401);
-                echo json_encode(["status" => "error", "message" => "Nomor HP belum terverifikasi"]);
-                exit();
-            }
-            
-            // Periksa status verifikasi identitas
-            $verifQuery = "SELECT status FROM identity_verifications 
-                           WHERE user_id = :user_id 
-                           ORDER BY created_at DESC 
-                           LIMIT 1";
-            $verifStmt = $pdo->prepare($verifQuery);
-            $verifStmt->bindParam(':user_id', $row['id']);
-            $verifStmt->execute();
-            $verification = $verifStmt->fetch(PDO::FETCH_ASSOC);
-            
-            $identity_status = $verification ? $verification['status'] : 'pending';
-            
-            http_response_code(200);
-            echo json_encode([
-                "status" => "success",
-                "message" => "Login berhasil",
-                "user_id" => $row['id'],
-                "name" => $row['name'],
-                "email" => $row['email'],
-                "role" => $row['role'],
-                "identity_status" => $identity_status
-            ]);
-        } else {
-            http_response_code(401);
-            echo json_encode(["status" => "error", "message" => "Password salah"]);
-        }
-    } else {
-        http_response_code(404);
-        echo json_encode(["status" => "error", "message" => "User tidak ditemukan"]);
-    }
-} else {
+if (!$email || !$password) {
     http_response_code(400);
     echo json_encode(["status" => "error", "message" => "Email dan password harus diisi"]);
+    exit;
 }
-?>
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    http_response_code(400);
+    echo json_encode(["status" => "error", "message" => "Format email tidak valid"]);
+    exit;
+}
+
+try {
+    $stmt = $pdo->prepare("SELECT id, name, email, password, role, is_verified FROM users WHERE email = :email LIMIT 1");
+    $stmt->execute([':email' => $email]);
+
+    if ($stmt->rowCount() === 0) {
+        http_response_code(404);
+        echo json_encode(["status" => "error", "message" => "User tidak ditemukan"]);
+        exit;
+    }
+
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!password_verify($password, $user['password'])) {
+        http_response_code(401);
+        echo json_encode(["status" => "error", "message" => "Password salah"]);
+        exit;
+    }
+
+    if ((int)$user['is_verified'] !== 1) {
+        http_response_code(401);
+        echo json_encode(["status" => "error", "message" => "Nomor HP belum terverifikasi"]);
+        exit;
+    }
+
+    // Cek status verifikasi identitas terakhir
+    $verifStmt = $pdo->prepare("SELECT status FROM identity_verifications 
+                                WHERE user_id = :user_id 
+                                ORDER BY created_at DESC 
+                                LIMIT 1");
+    $verifStmt->execute([':user_id' => $user['id']]);
+    $verif = $verifStmt->fetch(PDO::FETCH_ASSOC);
+    $identity_status = $verif ? $verif['status'] : 'pending';
+
+    http_response_code(200);
+    echo json_encode([
+        "status" => "success",
+        "message" => "Login berhasil",
+        "user_id" => $user['id'],
+        "name" => $user['name'],
+        "email" => $user['email'],
+        "role" => $user['role'],
+        "identity_status" => $identity_status
+    ]);
+
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        "status" => "error",
+        "message" => "Database error: " . $e->getMessage()
+    ]);
+}
