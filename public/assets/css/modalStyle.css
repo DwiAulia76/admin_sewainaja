@@ -1,5 +1,6 @@
 /* Modal Styles */
 .modal {
+  margin-left: 250px;
   display: none;
   position: fixed;
   z-index: 1050;
@@ -114,6 +115,7 @@ button[type="submit"]:hover {
 
 /* Tambahkan di modalStyle.css */
 .alert {
+  margin-left: 250px;
   padding: 15px;
   margin-bottom: 20px;
   border: 1px solid transparent;

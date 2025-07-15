@@ -21,16 +21,22 @@
 
         <div class="meta-container">
             <div class="status-container">
-                <div class="status-badge available">Tersedia (<?= count(array_filter($items, fn($item) => $item['status'] === 'available')) ?>)</div>
-                <div class="status-badge rented">Disewa (<?= count(array_filter($items, fn($item) => $item['status'] === 'rented')) ?>)</div>
+            <!-- Hitung status berdasarkan data produk -->
+            <div class="status-badge available">
+                Tersedia (<?= count(array_filter($items, fn($item) => $item['status'] === 'available')) ?>)
             </div>
-            <div class="total">Total: <?= count($items) ?> produk</div>
+            <div class="status-badge rented">
+                Disewa (<?= count(array_filter($items, fn($item) => $item['status'] === 'rented')) ?>)
+            </div>
         </div>
+        <div class="total">Total: <?= count($items) ?> produk</div>
+    </div>
 
         <div class="card-grid">
             <?php if (count($items) > 0): ?>
                 <?php foreach ($items as $item): ?>
                     <div class="card" data-id="<?= $item['id'] ?>">
+
                         <div class="card-header">
                             <div class="status-badge <?= $item['status'] === 'available' ? 'available' : 'rented' ?>">
                                 <?= $item['status'] === 'available' ? 'Tersedia' : 'Disewa' ?>
@@ -39,24 +45,30 @@
                         </div>
                         
                         <div class="image-container">
-                            <?php if ($item['image_url']): ?>
-                                <img src="<?= $item['image_url'] ?>" alt="<?= $item['name'] ?>">
-                            <?php else: ?>
-                                <div class="no-image">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                        <polyline points="21 15 16 10 5 21"></polyline>
-                                    </svg>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+    <?php if (!empty($item['image'])): ?>
+        <img 
+  src="/admin_sewainaja/<?= $item['image'] ?>" 
+  alt="Foto Produk" 
+  class="product-image">
+
+
+    <?php else: ?>
+        <div class="no-image">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+        </div>
+    <?php endif; ?>
+</div>
+
                         
                         <div class="card-body">
                             <h3><?= $item['name'] ?></h3>
                             <p class="description"><?= $item['description'] ?></p>
-                            <div class="price">Rp <?= number_format($item['price'], 0, ',', '.') ?></div>
-                        </div>
+                            <div class="price">Rp <?= number_format($item['price_per_day'], 0, ',', '.') ?>/hari</div>
+                    </div>
                         
                         <div class="actions">
                             <button class="edit" data-id="<?= $item['id'] ?>">

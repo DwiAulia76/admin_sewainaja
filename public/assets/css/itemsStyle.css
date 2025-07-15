@@ -29,8 +29,9 @@ body {
 }
 
 .container {
+  margin-left: 250px; /* sesuaikan dengan lebar sidebar kamu */
+  padding: 20px;
   max-width: 1400px;
-  margin: 0 auto;
 }
 
 /* ===== HEADER STYLES ===== */
