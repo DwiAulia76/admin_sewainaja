@@ -1,65 +1,89 @@
-<?php
-include './auth/auth.php'; 
-require_once '../config/database.php';
-
-$pdo = (new Database())->getConnection();
-$stmt = $pdo->query("SELECT * FROM products");
-$items = $stmt->fetchAll();
-?>
-
-<div class="header-bar">
-    <h1>Daftar Barang</h1>
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Cari barang...">
-        <button id="searchButton">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-            </svg>
-        </button>
-    </div>
-    <button class="add-item" id="openModal">
-        <span>+</span> Tambah Barang
-    </button>
-</div>
-
-<div class="card-grid" id="cardGrid">
-    <?php foreach ($items as $item): ?>
-        <div class="card" data-name="<?= htmlspecialchars(strtolower($item['name'])) ?>" 
-            data-category="<?= htmlspecialchars(strtolower($item['category'])) ?>">
-            
-            <div class="meta-container">
-                <div class="category"><?= htmlspecialchars($item['category']) ?></div>
-                <div class="stock">Stok: <?= $item['stock'] ?></div>
-            </div>
-            
-            <h3><?= htmlspecialchars($item['name']) ?></h3>
-            
-            <div class="image-container">
-                <?php if (!empty($item['image'])): ?>
-                    <img src="/admin_sewainaja/public/<?= htmlspecialchars($item['image']) ?>" 
-                         alt="<?= htmlspecialchars($item['name']) ?>">
-                <?php else: ?>
-                    <div class="no-image">Tidak ada gambar</div>
-                <?php endif; ?>
-            </div>
-            
-            <div class="description"><?= htmlspecialchars($item['description']) ?></div>
-            <div class="price">Rp <?= number_format($item['price_per_day'], 0, ',', '.') ?> /hari</div>
-            <div class="actions">
-                <button class="edit" data-id="<?= $item['id'] ?>" 
-                        data-name="<?= htmlspecialchars($item['name']) ?>"
-                        data-desc="<?= htmlspecialchars($item['description']) ?>"
-                        data-cat="<?= htmlspecialchars($item['category']) ?>"
-                        data-price="<?= $item['price_per_day'] ?>"
-                        data-stock="<?= $item['stock'] ?>"
-                        data-photo="<?= htmlspecialchars($item['image']) ?>">
-                    Edit
+  <div class="container">
+        <div class="header-bar">
+            <h1>Manajemen Produk</h1>
+            <div class="search-container">
+                <input type="text" placeholder="Cari produk..." id="searchInput">
+                <button id="searchButton">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
                 </button>
-                <form method="post" action="./config/delete_item.php" class="delete-form">
-                    <input type="hidden" name="id" value="<?= $item['id'] ?>">
-                    <button type="submit" class="delete">Hapus</button>
-                </form>
             </div>
+            <button class="add-item" id="addItemBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Tambah Produk</span>
+            </button>
         </div>
-    <?php endforeach; ?>
-</div>
+
+        <div class="meta-container">
+            <div class="status-container">
+                <div class="status-badge available">Tersedia (<?= count(array_filter($items, fn($item) => $item['status'] === 'available')) ?>)</div>
+                <div class="status-badge rented">Disewa (<?= count(array_filter($items, fn($item) => $item['status'] === 'rented')) ?>)</div>
+            </div>
+            <div class="total">Total: <?= count($items) ?> produk</div>
+        </div>
+
+        <div class="card-grid">
+            <?php if (count($items) > 0): ?>
+                <?php foreach ($items as $item): ?>
+                    <div class="card" data-id="<?= $item['id'] ?>">
+                        <div class="card-header">
+                            <div class="status-badge <?= $item['status'] === 'available' ? 'available' : 'rented' ?>">
+                                <?= $item['status'] === 'available' ? 'Tersedia' : 'Disewa' ?>
+                            </div>
+                            <div class="category"><?= $item['category'] ?></div>
+                        </div>
+                        
+                        <div class="image-container">
+                            <?php if ($item['image_url']): ?>
+                                <img src="<?= $item['image_url'] ?>" alt="<?= $item['name'] ?>">
+                            <?php else: ?>
+                                <div class="no-image">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h3><?= $item['name'] ?></h3>
+                            <p class="description"><?= $item['description'] ?></p>
+                            <div class="price">Rp <?= number_format($item['price'], 0, ',', '.') ?></div>
+                        </div>
+                        
+                        <div class="actions">
+                            <button class="edit" data-id="<?= $item['id'] ?>">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                <span>Edit</span>
+                            </button>
+                            <button class="delete" data-id="<?= $item['id'] ?>">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                <span>Hapus</span>
+                            </button>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="no-results">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <p>Tidak ada produk yang ditemukan</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>

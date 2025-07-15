@@ -1,88 +1,101 @@
-// Search functionality
-document.getElementById("searchInput").addEventListener("input", function () {
-  const searchTerm = this.value.toLowerCase().trim();
-  const cards = document.querySelectorAll(".card");
+document.addEventListener("DOMContentLoaded", function () {
+  const editButtons = document.querySelectorAll(".edit");
+  const deleteButtons = document.querySelectorAll(".delete");
+  const editItemModal = document.getElementById("editItemModal");
 
-  cards.forEach((card) => {
-    const name = card.dataset.name;
-    const category = card.dataset.category;
-    const status = card.dataset.status;
+  editButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const itemId = this.getAttribute("data-id");
+      const card = this.closest(".card");
 
-    // Check if search term exists in name, category or status
-    if (
-      name.includes(searchTerm) ||
-      category.includes(searchTerm) ||
-      status.includes(searchTerm) ||
-      searchTerm === ""
-    ) {
-      card.style.display = "flex";
-    } else {
-      card.style.display = "none";
-    }
+      const name = card.querySelector("h3").textContent;
+      const description = card.querySelector(".description").textContent;
+      const price = card
+        .querySelector(".price")
+        .textContent.replace("Rp ", "")
+        .replace(/\./g, "");
+      const category = card.querySelector(".category").textContent;
+      const status = card
+        .querySelector(".status-badge")
+        .classList.contains("available")
+        ? "available"
+        : "rented";
+      const imageUrl = card.querySelector(".image-container img")
+        ? card.querySelector(".image-container img").src
+        : "";
+
+      document.getElementById("editId").value = itemId;
+      document.getElementById("editName").value = name;
+      document.getElementById("editDescription").value = description;
+      document.getElementById("editPrice").value = price;
+      document.getElementById("editCategory").value = category;
+      document.getElementById("editStatus").value = status;
+
+      const currentImageContainer = document.getElementById(
+        "currentImageContainer"
+      );
+      currentImageContainer.innerHTML = "";
+      if (imageUrl) {
+        currentImageContainer.innerHTML = `<img src="${imageUrl}" alt="Current Image" style="max-width: 100px; max-height: 100px; border-radius: 4px;">`;
+      }
+
+      editItemModal.style.display = "block";
+    });
   });
-});
 
-// Add focus style to search input
-document.getElementById("searchInput").addEventListener("focus", function () {
-  this.parentElement.style.boxShadow = "0 0 0 3px rgba(147, 197, 253, 0.3)";
-  this.style.borderColor = "#93c5fd";
-});
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const itemId = this.getAttribute("data-id");
+      if (confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
+        fetch(`delete_item.php?id=${itemId}`, {
+          method: "DELETE",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              const card = this.closest(".card");
+              card.remove();
+              alert("Produk berhasil dihapus");
+              location.reload();
+            } else {
+              alert("Gagal menghapus produk");
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+    });
+  });
 
-document.getElementById("searchInput").addEventListener("blur", function () {
-  this.parentElement.style.boxShadow = "none";
-  this.style.borderColor = "#cbd5e1";
-});
+  const searchInput = document.getElementById("searchInput");
+  const searchButton = document.getElementById("searchButton");
 
-// Search button click focuses input
-document.getElementById("searchButton").addEventListener("click", function () {
-  document.getElementById("searchInput").focus();
-});
-
-// Adjust main content padding on resize
-window.addEventListener("resize", function () {
-  const sidebar = document.getElementById("sidebar");
-  const mainContent = document.querySelector(".main-content");
-
-  if (window.innerWidth > 768) {
-    sidebar.classList.remove("active");
-    mainContent.style.marginLeft = "240px";
-  } else {
-    mainContent.style.marginLeft = "0";
+  if (searchButton) {
+    searchButton.addEventListener("click", performSearch);
   }
-});
 
-// Enhanced search with animation
-document.getElementById("searchInput").addEventListener("input", function () {
-  const searchTerm = this.value.toLowerCase().trim();
-  const cards = document.querySelectorAll(".card");
-  let visibleCount = 0;
+  if (searchInput) {
+    searchInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        performSearch();
+      }
+    });
+  }
 
-  cards.forEach((card, index) => {
-    const name = card.dataset.name;
-    const category = card.dataset.category;
-    const status = card.dataset.status;
+  function performSearch() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll(".card");
 
-    if (
-      name.includes(searchTerm) ||
-      category.includes(searchTerm) ||
-      status.includes(searchTerm) ||
-      searchTerm === ""
-    ) {
-      card.style.display = "flex";
-      card.style.animationDelay = `${visibleCount * 0.05}s`;
-      card.classList.add("animate");
-      visibleCount++;
-    } else {
-      card.style.display = "none";
-      card.classList.remove("animate");
-    }
-  });
+    cards.forEach((card) => {
+      const name = card.querySelector("h3").textContent.toLowerCase();
+      const description = card
+        .querySelector(".description")
+        .textContent.toLowerCase();
 
-  // Update heading with search info
-  const heading = document.querySelector(".header-bar h1");
-  if (searchTerm !== "") {
-    heading.textContent = `Daftar Barang (${visibleCount} hasil ditemukan)`;
-  } else {
-    heading.textContent = "Daftar Barang";
+      if (name.includes(searchTerm) || description.includes(searchTerm)) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
   }
 });

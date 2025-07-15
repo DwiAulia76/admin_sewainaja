@@ -13,12 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $desc = $_POST['description'] ?? '';
     $cat = $_POST['category'] ?? '';
     $price = $_POST['price_per_day'] ?? 0;
-    $stock = $_POST['stock'] ?? 1;
     $existingPhoto = $_POST['existing_photo'] ?? '';
     $adminId = $_SESSION['user_id'];
 
     // Validasi input
-    if (empty($name) || empty($desc) || empty($cat) || $price <= 0 || $stock <= 0) {
+    if (empty($name) || empty($desc) || empty($cat) || $price <= 0) {
         $_SESSION['error'] = "Semua field harus diisi dengan benar";
         header("Location: ../barang.php");
         exit();
@@ -29,23 +28,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_FILES['photo']['name'])) {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
         $fileType = $_FILES['photo']['type'];
-        
+
         if (!in_array($fileType, $allowedTypes)) {
             $_SESSION['error'] = "Hanya file gambar (JPEG, PNG, GIF) yang diizinkan";
             header("Location: ../barang.php");
             exit();
         }
 
-        $uploadDir = __DIR__ . '/../public/uploads/';
+        // Direktori uploads/images di root project
+        $uploadDir = __DIR__ . '/../uploads/images/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
         $photoName = uniqid() . '_' . basename($_FILES['photo']['name']);
         $uploadPath = $uploadDir . $photoName;
 
         if (move_uploaded_file($_FILES['photo']['tmp_name'], $uploadPath)) {
-            $photoPath = 'uploads/' . $photoName;
+            $photoPath = 'uploads/images/' . $photoName;
 
             // Hapus foto lama jika ada
-            if (!empty($existingPhoto) && file_exists('../public/' . $existingPhoto)) {
-                unlink('../public/' . $existingPhoto);
+            if (!empty($existingPhoto) && file_exists(__DIR__ . '/../' . $existingPhoto)) {
+                unlink(__DIR__ . '/../' . $existingPhoto);
             }
         } else {
             $_SESSION['error'] = "Gagal mengupload foto baru";
@@ -59,10 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo = (new Database())->getConnection();
         $stmt = $pdo->prepare("UPDATE products SET 
             name = ?, description = ?, category = ?, price_per_day = ?, 
-            image = ?, stock = ?, updated_at = NOW() 
+            image = ?, updated_at = NOW() 
             WHERE id = ? AND owner_id = ?");
         
-        $stmt->execute([$name, $desc, $cat, $price, $photoPath, $stock, $id, $adminId]);
+        $stmt->execute([$name, $desc, $cat, $price, $photoPath, $id, $adminId]);
 
         $_SESSION['success'] = "Barang berhasil diperbarui";
     } catch (PDOException $e) {
