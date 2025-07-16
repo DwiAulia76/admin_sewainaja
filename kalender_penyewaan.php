@@ -11,7 +11,22 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
 $database = new Database();
 $pdo = $database->getConnection();
 
-$active_page = 'kalender_penyewaan';
+// Query untuk mengambil data penyewaan yang lengkap
+$stmt = $pdo->query("
+    SELECT 
+        t.id,
+        p.name AS product_name,
+        u.name AS user_name,
+        t.start_date,
+        t.end_date,
+        t.status,
+        t.total_price
+    FROM transactions t
+    JOIN products p ON t.product_id = p.id
+    JOIN users u ON t.user_id = u.id
+    ORDER BY t.start_date ASC
+");
+$rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -23,17 +38,23 @@ $active_page = 'kalender_penyewaan';
     <link rel="stylesheet" href="assets/css/kalender.css">
 </head>
 <body>
-    <button class="mobile-toggle" id="sidebarToggle">
-        ☰
-    </button>
+    <button class="mobile-toggle" id="sidebarToggle">☰</button>
 
-    <?php include 'views/components/sidebar.php'; ?>
+    <?php 
+    $active_page = 'kalender_penyewaan';
+    include 'views/components/sidebar.php'; 
+    ?>
 
     <main class="main-content">
         <?php include 'views/penyewaan/kalender.php'; ?>
         <?php include 'views/penyewaan/modal_detail.php'; ?>
     </main>
 
+    <script>
+    // Kirim data ke JavaScript dengan format yang diperlukan
+    const rentalData = <?= json_encode($rentals) ?>;
+    let filteredRentalData = [...rentalData];
+    </script>
     <script src="assets/js/kalender.js"></script>
     <script src="assets/js/sidebarScript.js"></script>
 </body>

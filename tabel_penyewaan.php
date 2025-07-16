@@ -16,10 +16,11 @@ $pdo = (new Database())->getConnection();
 
 $stmt = $pdo->prepare("
     SELECT t.*, p.name AS product_name, p.image AS product_image, u.name AS user_name
-    FROM transactions t
-    JOIN products p ON t.product_id = p.id
-    JOIN users u ON t.user_id = u.id
-    ORDER BY t.created_at DESC
+FROM transactions t
+JOIN products p ON t.product_id = p.id
+JOIN users u ON t.user_id = u.id
+ORDER BY t.created_at DESC
+
 ");
 
 $stmt->execute();

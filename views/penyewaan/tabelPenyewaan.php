@@ -4,7 +4,7 @@
   <table class="rental-table">
     <thead>
       <tr>
-        <th>No</th>
+        <th>ID Transaksi</th>
         <th>Produk</th>
         <th>Penyewa</th>
         <th>Tgl Mulai</th>
@@ -17,7 +17,7 @@
     <tbody>
       <?php foreach ($transactions as $i => $trx): ?>
       <tr>
-        <td><?= $i + 1 ?></td>
+        <td><?=  str_pad($trx['id'], 3, '0', STR_PAD_LEFT) ?></td>
         <td>
           <div class="product-info">
             <img src="<?= $trx['product_image'] ?>" class="product-img" alt="Produk">

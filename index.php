@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Dashboard</title>
-    <link rel="stylesheet" href="public/assets/css/sidebarStyle.css">
-    <link rel="stylesheet" href="public/assets/css/dashboardStyle.css">
+    <link rel="stylesheet" href="assets/css/sidebarStyle.css">
+    <link rel="stylesheet" href="assets/css/dashboardStyle.css">
 </head>
 <body>
     <button class="mobile-toggle" id="sidebarToggle">
@@ -24,6 +24,6 @@
         <?php include 'views/dashboard/dashboard.php'; ?>
     </main>
 
-    <script src="public/assets/js/sidebarScript.js"></script>
+    <script src="assets/js/sidebarScript.js"></script>
 </body>
 </html>
