@@ -36,6 +36,7 @@ $rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Admin Panel - Kalender Penyewaan</title>
     <link rel="stylesheet" href="assets/css/sidebarStyle.css">
     <link rel="stylesheet" href="assets/css/kalender.css">
+    <link rel="stylesheet" href="views/penyewaan/modalDetail.css"> <!-- CSS modal di penyewaan -->
 </head>
 <body>
     <button class="mobile-toggle" id="sidebarToggle">☰</button>
@@ -54,8 +55,10 @@ $rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // Kirim data ke JavaScript dengan format yang diperlukan
     const rentalData = <?= json_encode($rentals) ?>;
     let filteredRentalData = [...rentalData];
+    window.rentalData = rentalData; // Pastikan global
     </script>
     <script src="assets/js/kalender.js"></script>
+    <script src="views/penyewaan/modalDetail.js"></script> <!-- JS modal di penyewaan -->
     <script src="assets/js/sidebarScript.js"></script>
 </body>
 </html>

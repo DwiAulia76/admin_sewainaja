@@ -2,13 +2,13 @@
 <div class="kalender-container">
     <h1>Kalender Penyewaan</h1>
     
-    <!-- Fitur Pencarian yang Disederhanakan -->
+    <!-- Fitur Pencarian -->
     <div class="search-container">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Cari penyewaan...">
             <div class="search-actions">
-                <button id="searchButton" class="search-btn">🔍</button>
-                <button id="resetButton" class="reset-btn">↺</button>
+                <button id="searchButton" class="search-btn">Cari</button>
+                <button id="resetButton" class="reset-btn">Reset</button>
             </div>
         </div>
         <div class="search-filters">
@@ -46,5 +46,5 @@
         </div>
     </div>
 
-    <div id="calendar" class="calendar-grid"></div> <!-- Ubah menjadi grid -->
+    <div id="calendar" class="calendar-grid"></div>
 </div>

@@ -3,7 +3,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h2>Detail Penyewaan</h2>
-            <span class="close">&times;</span>
+            <span class="close" id="closeModalBtn">&times;</span>
         </div>
         <div class="modal-body">
             <div class="detail-row">
