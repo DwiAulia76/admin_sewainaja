@@ -16,6 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price    = $_POST['price_per_day'] ?? 0;
     $status   = $_POST['status'] ?? 'available';
     $existingPhoto = $_POST['existing_photo'] ?? '';
+if (empty($existingPhoto)) {
+    $_SESSION['error'] = "Path foto tidak valid.";
+    header("Location: ../barang.php");
+    exit();
+}
     $adminId  = $_SESSION['user_id'];
 
     // Validasi input dasar
@@ -60,7 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: ../barang.php");
             exit();
         }
-    }
+    } else {
+    // Jika tidak ada upload baru, tetap gunakan foto lama
+    $photoPath = $existingPhoto;
+}
 
     // Simpan perubahan ke database
     try {

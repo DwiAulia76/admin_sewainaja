@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("edit_name").value = item.name;
     document.getElementById("edit_description").value = item.description;
     document.getElementById("edit_price").value = item.price_per_day;
+    document.getElementById("edit_existing_photo").value = item.image;
 
     // Set kategori
     const categorySelect = document.getElementById("edit_category");

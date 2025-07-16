@@ -7,6 +7,7 @@
     </div>
     <form method="POST" action="./backweb/edit_produk.php" enctype="multipart/form-data">
       <input type="hidden" name="id" id="edit_id">
+      <input type="hidden" name="existing_photo" id="edit_existing_photo">
       
       <div class="form-group">
         <label>Nama Produk</label>
