@@ -546,6 +546,50 @@ button:focus {
   animation: fadeIn 0.5s ease-out;
 }
 
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.calendar-table th,
+.calendar-table td {
+  width: 14.28%;
+  border: 1px solid #e5e7eb;
+  vertical-align: top;
+  padding: 5px;
+  height: 80px;
+  position: relative;
+}
+.date-number {
+  font-weight: bold;
+}
+.event-tag {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.event-tag.pending {
+  background: #fbbf24;
+}
+.event-tag.disewa {
+  background: #10b981;
+}
+.event-tag.diproses {
+  background: #3b82f6;
+}
+.event-tag.selesai {
+  background: #4b5563;
+}
+.event-tag.dibatalkan {
+  background: #ef4444;
+}
+
 /* ===== RESPONSIVE STYLES ===== */
 @media (max-width: 1200px) {
   .calendar-cell {

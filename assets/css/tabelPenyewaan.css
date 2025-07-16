@@ -1,0 +1,115 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+}
+
+.rental-container {
+  padding: 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+  max-width: 1200px;
+  margin-left: 260px; /* disesuaikan dengan lebar sidebar */
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.rental-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.rental-table th,
+.rental-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rental-table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+.rental-table td {
+  color: #374151;
+  vertical-align: middle;
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Status badge */
+.status {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.status.selesai {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.status.diproses {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+.status.pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.status.dibatalkan {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+.status.disewa {
+  background-color: #ddd6fe;
+  color: #5b21b6;
+}
+
+/* Buttons */
+.btn {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+}
+
+.btn-light {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+.btn-blue {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-blue:hover {
+  background-color: #2563eb;
+}

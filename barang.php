@@ -73,6 +73,12 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
       openEditModal(itemData);
     });
   });
+
+  function confirmDelete(id) {
+    if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+        window.location.href = `./backweb/delete_produk.php?id=${id}`;
+    }
+}
 </script>
 
 </body>

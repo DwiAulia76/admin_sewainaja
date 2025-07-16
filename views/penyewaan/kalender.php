@@ -1,18 +1,27 @@
 <?php
-require_once '../config/database.php';
+require_once './config/database.php';
 
 $pdo = (new Database())->getConnection();
 
+// Ambil data transaksi lengkap untuk kalender
 $stmt = $pdo->prepare("
-    SELECT t.*, p.name AS product_name, u.name AS user_name
+    SELECT 
+        t.id AS transaction_id,
+        t.start_date,
+        t.end_date,
+        t.status,
+        t.total_price,
+        p.name AS product_name,
+        u.name AS user_name
     FROM transactions t
     JOIN products p ON t.product_id = p.id
     JOIN users u ON t.user_id = u.id
 ");
 $stmt->execute();
-$transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
+<!-- Kalender Penyewaan -->
 <div class="kalender-container">
     <div class="header">
         <h1>Kalender Penyewaan</h1>
@@ -33,8 +42,8 @@ $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <label>Filter berdasarkan:</label>
                     <select id="filterBy">
                         <option value="all">Semua</option>
-                        <option value="item_name">Nama Alat</option>
-                        <option value="penyewa_name">Nama Penyewa</option>
+                        <option value="product_name">Nama Alat</option>
+                        <option value="user_name">Nama Penyewa</option>
                         <option value="status">Status</option>
                     </select>
                 </div>
@@ -42,10 +51,11 @@ $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <label>Status:</label>
                     <select id="statusFilter">
                         <option value="all">Semua Status</option>
-                        <option value="disewa">Disetujui</option>
-                        <option value="menunggu pembayaran">Menunggu Pembayaran</option>
-                        <option value="ditolak">Ditolak</option>
+                        <option value="disewa">Disewa</option>
+                        <option value="pending">Menunggu</option>
+                        <option value="diproses">Diproses</option>
                         <option value="selesai">Selesai</option>
+                        <option value="dibatalkan">Dibatalkan</option>
                     </select>
                 </div>
             </div>
@@ -62,27 +72,31 @@ $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             <div class="legend">
                 <div class="legend-item">
-                    <span class="legend-color approved"></span>
-                    Disetujui
+                    <span class="legend-color approved"></span> Disewa
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color pending"></span>
-                    Menunggu
+                    <span class="legend-color pending"></span> Menunggu
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color rejected"></span>
-                    Ditolak
+                    <span class="legend-color processing"></span> Diproses
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color completed"></span> Selesai
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color cancelled"></span> Dibatalkan
                 </div>
             </div>
         </div>
 
+        <!-- JSON data untuk JavaScript -->
         <script>
             const rentalData = <?= json_encode($rentals) ?>;
-            let filteredRentalData = [...rentalData]; // Salin data untuk pencarian
+            let filteredRentalData = [...rentalData]; // duplikasi untuk filter/pencarian
         </script>
-        
+
         <div id="calendar" class="calendar">
-            <!-- Calendar cells will be generated here -->
+            <!-- Kalender akan digenerate oleh JS -->
         </div>
     </div>
 </div>
