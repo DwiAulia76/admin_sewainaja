@@ -14,11 +14,11 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - Manajemen Barang</title>
-
-  <!-- ✅ GUNAKAN PATH ABSOLUT -->
-  <link rel="stylesheet" href="/admin_sewainaja/public/assets/css/itemsStyle.css">
-  <link rel="stylesheet" href="/admin_sewainaja/public/assets/css/sidebarStyle.css">
-  <link rel="stylesheet" href="/admin_sewainaja/public/assets/css/modalStyle.css">
+  
+  <!-- PASTIKAN PATH BENAR -->
+  <link rel="stylesheet" href="./assets/css/itemsStyle.css">
+  <link rel="stylesheet" href="./assets/css/sidebarStyle.css">
+  <link rel="stylesheet" href="./assets/css/modal.css">
 </head>
 <body>
   <!-- Toggle Sidebar (mobile) -->
@@ -46,15 +46,14 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Menampilkan daftar item -->
     <?php include './views/items/items.php'; ?>
+
+    <?php include './views/items/modal_tambah.php'; ?>
   </main>
 
-  <!-- Modal Tambah & Edit -->
-  <?php include './views/components/modalAddItem.php'; ?>
-  <?php include './views/components/modalEditItem.php'; ?>
 
   <!-- Scripts -->
-  <script src="/admin_sewainaja/public/assets/js/itemScript.js"></script>
-  <script src="/admin_sewainaja/public/assets/js/sidebarScript.js"></script>
-  <script src="/admin_sewainaja/public/assets/js/modalScript.js"></script>
+  <script src="./assets/js/sidebarScript.js"></script>
+  <script src="./views/items/addmodal.js"></script>
+
 </body>
 </html>

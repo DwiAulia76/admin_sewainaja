@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        $uploadDir = __DIR__ . '/../public/uploads/images/';
+        $uploadDir = __DIR__ . '/../uploads/images/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uploadPath = $uploadDir . $photoName;
 
         if (move_uploaded_file($_FILES['photo']['tmp_name'], $uploadPath)) {
-            $photoPath = 'public/uploads/images/' . $photoName;
+            $photoPath = 'uploads/images/' . $photoName;
 
             // Hapus foto lama jika ada
             $oldPhotoPath = __DIR__ . '/../' . $existingPhoto;
