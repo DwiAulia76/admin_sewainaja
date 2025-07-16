@@ -53,3 +53,24 @@ select {
   border: none;
   border-radius: 5px;
 }
+
+/* Style untuk foto saat ini */
+.current-photo {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.current-photo img {
+  max-height: 150px;
+  border-radius: 4px;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 5px;
+  color: #6c757d;
+  font-size: 0.85rem;
+}

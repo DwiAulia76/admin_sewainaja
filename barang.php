@@ -48,12 +48,32 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include './views/items/items.php'; ?>
 
     <?php include './views/items/modal_tambah.php'; ?>
+    <?php include './views/items/modal_edit.php'; ?>
   </main>
 
 
   <!-- Scripts -->
   <script src="./assets/js/sidebarScript.js"></script>
   <script src="./views/items/addmodal.js"></script>
+  <script src="./views/items/editmodal.js"></script>
+  <script>
+  // Event listener untuk tombol edit
+  document.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', function() {
+      const itemData = {
+        id: this.dataset.id,
+        name: this.dataset.name,
+        description: this.dataset.description,
+        category: this.dataset.category,
+        price_per_day: this.dataset.price,
+        status: this.dataset.status,
+        image: this.dataset.image
+      };
+      
+      openEditModal(itemData);
+    });
+  });
+</script>
 
 </body>
 </html>
