@@ -2,7 +2,7 @@
     <h2>Ringkasan Sistem</h2>
     <div class="stats">
         <?php
-        require_once '../config/database.php';
+        require_once './config/database.php';
         $pdo = (new Database())->getConnection();
         
         // Total Barang
