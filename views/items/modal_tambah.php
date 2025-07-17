@@ -20,6 +20,7 @@
         <select name="category" required>
           <option value="">Pilih Kategori</option>
           <option value="Alat Pesta & Acara">Alat Pesta & Acara</option>
+          <option value="Perlengkapan Bayi & Anak">Perlengkapan Bayi & Anak</option>
           <option value="Alat Konstruksi & Perkakas">Alat Konstruksi & Perkakas</option>
           <option value="Perlengkapan Outdoor & Camping">Perlengkapan Outdoor & Camping</option>
           <option value="Elektronik Khusus">Elektronik Khusus</option>

@@ -56,6 +56,8 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <script src="./assets/js/sidebarScript.js"></script>
   <script src="./views/items/addmodal.js"></script>
   <script src="./views/items/editmodal.js"></script>
+  <script src="./views/items/searchProduct.js"></script>
+
   <script>
   // Event listener untuk tombol edit
   document.querySelectorAll('.btn-edit').forEach(button => {

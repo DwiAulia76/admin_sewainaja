@@ -20,7 +20,8 @@
         <td><?=  str_pad($trx['id'], 3, '0', STR_PAD_LEFT) ?></td>
         <td>
           <div class="product-info">
-            <img src="<?= $trx['product_image'] ?>" class="product-img" alt="Produk">
+            <img src="/admin_sewainaja/<?= $trx['product_image'] ?>" class="product-img" alt="Produk"> 
+            
             <span><?= htmlspecialchars($trx['product_name']) ?></span>
           </div>
         </td>
