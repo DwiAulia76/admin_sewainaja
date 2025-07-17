@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require_once './auth/auth.php';
@@ -137,6 +136,15 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .profile-item {
             margin-bottom: 10px;
         }
+
+        .input-full {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -164,8 +172,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?= htmlspecialchars($user['address']) ?></td>
                     <td><?= htmlspecialchars($user['id_status'] ?? 'Belum Ada') ?></td>
                     <td>
-                        <button class="btn btn-profile" onclick="openProfileModal(<?= htmlspecialchars(json_encode($user)) ?>)">Lihat</button>
-                        <button class="btn btn-edit" onclick="editUser(<?= $user['user_id'] ?>)">Edit</button>
+                        <button class="btn btn-profile" onclick='openProfileModal(<?= json_encode($user) ?>)'>Lihat</button>
+                        <button class="btn btn-edit" onclick='openEditModal(<?= json_encode($user) ?>)'>Edit</button>
                         <button class="btn btn-delete" onclick="deleteUser(<?= $user['user_id'] ?>)">Hapus</button>
                     </td>
                 </tr>
@@ -180,6 +188,37 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <span class="close" onclick="closeModal('profileModal')">&times;</span>
             <div class="modal-header">Profil Pengguna</div>
             <div id="profileContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal Edit -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editModal')">&times;</span>
+            <div class="modal-header">Edit Pengguna</div>
+            <form id="editForm">
+                <input type="hidden" name="user_id" id="editUserId">
+                <div class="profile-item">
+                    <label>Nama:</label>
+                    <input type="text" name="name" id="editName" class="input-full" required>
+                </div>
+                <div class="profile-item">
+                    <label>Email:</label>
+                    <input type="email" name="email" id="editEmail" class="input-full" required>
+                </div>
+                <div class="profile-item">
+                    <label>Telepon:</label>
+                    <input type="text" name="phone" id="editPhone" class="input-full">
+                </div>
+                <div class="profile-item">
+                    <label>Alamat:</label>
+                    <textarea name="address" id="editAddress" class="input-full" rows="3"></textarea>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="button" class="btn btn-delete" onclick="closeModal('editModal')">Batal</button>
+                    <button type="submit" class="btn btn-edit">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -199,24 +238,42 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             document.getElementById('profileModal').style.display = 'block';
         }
 
+        function openEditModal(user) {
+            document.getElementById('editUserId').value = user.user_id;
+            document.getElementById('editName').value = user.name;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editPhone').value = user.phone || '';
+            document.getElementById('editAddress').value = user.address || '';
+            document.getElementById('editModal').style.display = 'block';
+        }
+
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
         }
 
         window.onclick = function(event) {
-            const modal = document.getElementById('profileModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
+            const modals = ['profileModal', 'editModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) modal.style.display = 'none';
+            });
+        };
 
-        function editUser(userId) {
-            alert("Fitur edit untuk user ID " + userId + " belum diimplementasikan.");
-        }
+        // Simulasi kirim data edit
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            console.log("Data dikirim ke backend:", data);
+            alert("Data berhasil disimpan untuk user ID " + data.user_id + " (simulasi)");
+
+            closeModal('editModal');
+        });
 
         function deleteUser(userId) {
             if (confirm("Yakin ingin menghapus user ini?")) {
-                // Lakukan fetch/POST untuk delete jika tersedia
                 alert("User dengan ID " + userId + " dihapus (simulasi).");
             }
         }
