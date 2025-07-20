@@ -7,6 +7,14 @@ class Database {
     private $charset = 'utf8mb4';
     private $pdo;
 
+    //     private $host = '01p30u.h.filess.io';
+    // private $db   = 'adminsewainaja_warndodown';
+    // private $user = 'adminsewainaja_warndodown';
+    // private $pass = 'a2625aa6d8a427bbc7b7b961f32d4ed1ef969f42';
+    // private $charset = 'utf8mb4';
+
+    private $port = 3307;
+
     public function __construct() {
         $dsn = "mysql:host={$this->host};dbname={$this->db};charset={$this->charset}";
         $options = [
